@@ -6,5 +6,5 @@
 	<classpathentry kind="lib" path="E:/starsector/starsector-core/starfarer.api.jar"/>
 	<classpathentry kind="lib" path="E:/starsector/starsector-core/xstream-1.4.10.jar"/>
 	<classpathentry kind="lib" path="E:/starsector/mods/IndEvo/jars/IndEvo.jar"/>
-	<classpathentry kind="output" path=""/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

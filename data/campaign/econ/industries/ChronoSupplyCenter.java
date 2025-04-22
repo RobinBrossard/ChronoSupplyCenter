@@ -215,7 +215,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 					"dragonpod", // Dragon Pod 龙形炸弹舱
 					"gigacannon", // Giga Cannon 千兆加农炮
 					"minelayer1", // Minelayer I 地雷投放器Ⅰ
-					"minelayer2" // Minelayer II 地雷投放器Ⅱ add test
+					"minelayer2" // Minelayer II 地雷投放器Ⅱ
 			);
 
 			for (String id : weaponIds) {
