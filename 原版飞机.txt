@@ -1,0 +1,8 @@
+id                         role         role desc  op cost  range   attackRunRange  
+trident_wing               BOMBER       轰炸机        25       4000    2000            
+perdition_wing             BOMBER       轰炸机        20       4000    2000            
+dagger_wing                BOMBER       轰炸机        18       4000    2000            
+flash_wing                 BOMBER       无人轰炸机      12       4000    2500  
+warthog_wing               FIGHTER      重型战斗机      12       2000    500             
+thunder_wing               FIGHTER      重型截击机      10       6000    500
+xyphos_wing                SUPPORT      支援战斗机      18       0       500             
