@@ -1,5 +1,7 @@
 package data.campaign.econ.industries;
 
+import java.awt.Color;
+
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -17,7 +19,7 @@ public class FleetDailyResupply implements EveryFrameScript {
 	private static final int SUPPLIES_BATCH = 50; // 每次补给量
 	private static final int FUEL_THRESHOLD = 50; // 燃料阈值
 	private static final int FUEL_BATCH = 50; // 每次补给量
-	private static final float CR_THRESHOLD = 0.7f; // 设置CR的阈值，例如低于70%就恢复
+	private static final float CR_THRESHOLD = 0.6f; // 设置CR的阈值，例如低于70%就恢复
 	private static final float CR_RECOVERY_AMOUNT = 1f; // 每次恢复的CR量，例如10%
 
 	private final IntervalUtil tracker = new IntervalUtil(INTERVAL_DAYS, INTERVAL_DAYS);
@@ -49,8 +51,9 @@ public class FleetDailyResupply implements EveryFrameScript {
 		float suppliesSpace = cargo.getSpaceLeft();
 		if (suppliesQty < SUPPLIES_THRESHOLD && suppliesSpace >= SUPPLIES_BATCH) {
 			cargo.addCommodity(Commodities.SUPPLIES, SUPPLIES_BATCH);
-			// 第一行，金黄色
-			Global.getSector().getCampaignUI().addMessage("[#FFD700]--广告位招租- 时光科技-吃了么送餐快线 800-810-8888[]");
+			// 第一行，颜色
+			Global.getSector().getCampaignUI().addMessage("--广告位招租-- 时光科技-吃了么送餐快线 800-810-8888", Color.BLUE);
+			
 			// 第二行，白色（默认）
 			Global.getSector().getCampaignUI().addMessage("出门在外，带够干粮哦，免费送您补给一份");
 		}
@@ -60,8 +63,10 @@ public class FleetDailyResupply implements EveryFrameScript {
 		float fuelSpace = cargo.getSpaceLeft();
 		if (fuelQty < FUEL_THRESHOLD && fuelSpace >= FUEL_BATCH) {
 			cargo.addCommodity(Commodities.FUEL, FUEL_BATCH);
-			// 第一行，红色
-			Global.getSector().getCampaignUI().addMessage("[#FF0000]--广告位招租-- 时光科技-哒哒送油快线 800-810-8888[]");
+		    
+		    // 显示红色的消息
+		    Global.getSector().getCampaignUI().addMessage("--广告位招租-- 时光科技-哒哒送油快线 800-810-8888", Color.RED);
+
 			// 第二行，白色（默认）
 			Global.getSector().getCampaignUI().addMessage("出门在外，油箱不能空，免费送您燃油一份");
 			// —— 调试日志：打印舰队仓库所有物品 ——
@@ -88,8 +93,9 @@ public class FleetDailyResupply implements EveryFrameScript {
 						float newCR = Math.min(1f, currentCR + CR_RECOVERY_AMOUNT);
 						repairTracker.setCR(newCR); // 使用 RepairTrackerAPI 的 setCR() 方法
 						// 可选：发送消息
-						// 第一行，金黄色
-						Global.getSector().getCampaignUI().addMessage("[#FFD700]--广告位招租-- 时光科技-狗东快修 800-810-8888[]");
+					    // 使用 RGB 值创建 Color 对象
+					    Color goldColor = new Color(255, 215, 0);
+					    Global.getSector().getCampaignUI().addMessage("--广告位招租-- 时光科技-狗东快修 800-810-8888", goldColor);
 						// 第二行，白色（默认）
 						Global.getSector().getCampaignUI().addMessage("道路千万条，安全第一条！帮你快速恢复了舰队CR");
 					}

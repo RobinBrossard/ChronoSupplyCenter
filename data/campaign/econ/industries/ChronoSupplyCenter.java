@@ -181,7 +181,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				Global.getSector().getCampaignUI().addMessage("时光科技：已发放所有一次性蓝图包和加成稀有物");
 			}
 
-			// 3. 稀有 special 按几率产出，增加趣味性
+			// 3. 稀有 special 按几率产出，增加趣味性 -- 不实用，暂时取消了。
 //            List<SpecialConfig> specials = Arrays.asList(
 //                new SpecialConfig("special", "sensor_array",            1, 0.50f),
 //                new SpecialConfig("special", "nanoforge",               1, 0.10f),
@@ -196,27 +196,138 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //                }
 //            }
 
-			// 4. 武器保底补给
-			List<String> weaponIds = Arrays.asList("heatseeker", // Heat Seeker 导弹
-					"salamanderpod", // Salamander Pod 导弹
-					"realitydisruptor", // Reality Disruptor 幻境破坏者
-					"motelauncher", // Mote Launcher 微粒发射器
-					"motelauncher_hf", // 高频微粒发射器
-					"tachyonlance", // Tachyon Lance 超光速长矛
-					"ionpulser", // Ion Pulser 离子脉冲炮
-					"terminator_missile", // Terminator Missile 终结者导弹
-					"pilum", // Pilum 标枪
-					"pilum_large", // Pilum Large 大型标枪
-					"rifttorpedo", // Rift Torpedo 裂隙鱼雷
-					"reaper", // Reaper 歼灭者
-					"dragon", // Dragon 龙形激光
-					"typhoon", // Typhoon 台风级炮
-					"cyclone", // Cyclone 气旋级炮
-					"dragonpod", // Dragon Pod 龙形炸弹舱
-					"gigacannon", // Giga Cannon 千兆加农炮
-					"minelayer1", // Minelayer I 地雷投放器Ⅰ
-					"minelayer2" // Minelayer II 地雷投放器Ⅱ
-			);
+			// 4. 武器保底补给。列表是全部标准版武器，射程排序，打开了常用好用和稀有的，其它的想要自己开，但有些特殊的，是装不了的，只占格子
+			List<String> weaponIds = Arrays.asList(
+				    "pilum",               // Pilum 短矛 LRM 发射器
+				    "pilum_large",         // Pilum Large 短矛 LRM 投射舱
+//				    "harpoon",             // Harpoon 鱼叉 MRM
+//				    "harpoon_single",      // Harpoon Single 鱼叉 MRM (双发)
+//				    "harpoonpod",          // Harpoon Pod 鱼叉 MRM 发射舱
+				    "hurricane",           // Hurricane 飓风 MIRV 发射器
+				    "hydra",               // Hydra 九头蛇 MDEM 发射器
+//				    "squall",              // Squall 暴风 MLRS
+//				    "resonatormrm",        // Resonator MRM 共鸣体 MRM 发射器
+//				    "bomb",                // Bomb 标准炸弹发射架
+				    "heatseeker",          // Heatseeker 火蛇 MRM
+				    "dragon",              // Dragon 龙炎 DEM 鱼雷
+				    "salamanderpod",       // Salamander Pod 火蛇 MRM 发射舱
+//				    "phasecl_bomber",      // Phasecl Bomber 感应空雷发射器 (战机型)
+//				    "dragonpod",           // Dragon Pod 龙炎 鱼雷 发射舱
+//				    "rifttorpedo",         // Rift Torpedo 裂隙鱼雷发射器
+//				    "clusterbomb",         // Clusterbomb 毒刺-级感应空雷
+//				    "annihilator",         // Annihilator 歼灭者火箭炮
+//				    "annihilator_fighter", // Annihilator Fighter 歼灭者火箭发射器
+//				    "breach",              // Breach 破舱 SRM
+				    "gorgon",              // Gorgon 戈耳工 DEM SRM
+//				    "gorgonpod",           // Gorgon Pod 戈耳工 SRM 发射舱
+//				    "breachpod",           // Breach Pod 破舱 SRM 发射舱
+//				    "annihilatorpod",      // Annihilator Pod 歼灭者火箭发射舱
+//				    "terminator_missile",  // Terminator Missile 终结者导弹改装
+//				    "locust",              // Locust 蝗虫 SRM 发射器
+				    "gauss",               // Gauss 高斯炮
+				    "reaper",              // Reaper 死神鱼雷
+				    "atropos",             // Atropos 阿特罗波斯鱼雷发射架
+				    "atropos_single",      // Atropos Single 阿特罗波斯鱼雷 (单发)
+				    "hammer",              // Hammer 大锤级鱼雷
+				    "hammer_single",       // Hammer Single 大锤级鱼雷 (单发)
+				    "sabot",               // Sabot 赛博 SRM
+				    "sabot_single",        // Sabot Single 赛博 SRM (双发)
+				    "sabot_fighter",       // Sabot Fighter 赛博 SRM (单发)
+				    "gazer",               // Gazer 眼魔 DEM SRM
+				    "gazerpod",            // Gazer Pod 眼魔 SRM 发射舱
+				    "sabotpod",            // Sabot Pod 赛博 SRM 发射舱
+//				    "jackhammer",          // Jackhammer 气锤
+				    "typhoon",             // Typhoon 台风级死神鱼雷发射器
+				    "cyclone",             // Cyclone 旋风型死神鱼雷发射器
+				    "hammerrack",          // Hammerrack 大锤鱼雷发射舱
+				    "amsrm",               // AMSRM 反物质 SRM 发射器
+				    "heavymauler",         // Heavy Mauler 重型撕裂者
+				    "hveldriver",          // Hveldriver 高速打击者
+				    "swarmer",             // Swarmer 蜂群 SRM 发射器
+				    "swarmer_fighter",     // Swarmer Fighter 蜂群 SRM 发射器
+				    "gazer_payload",       // Gazer Payload 眼魔 - 光束
+				    "dragon_payload",      // Dragon Payload 龙炎 - 光束
+				    "phasecl",             // Phasecl 感应空雷发射器
+//				    "taclaser",            // Taclaser 战术激光炮
+				    "gravitonbeam",        // Graviton Beam 引力子束
+				    "irautolance",         // IRAutoLance IR 自动长矛
+				    "ionbeam",             // Ion Beam 离子束
+				    "hil",                 // HIL 高强度激光
+				    "tachyonlance",        // Tachyon Lance 速子长矛
+//				    "riftcascade",         // Rift Cascade 裂隙洪流发射极
+//				    "vpdriver",            // VPDriver 不稳定粒子投射器
+//				    "realitydisruptor",    // Reality Disruptor 现实干扰器
+//				    "minelayer1",          // Minelayer I 感应空雷
+//				    "minelayer2",          // Minelayer II 重型感应空雷
+//				    "od_bomblauncher",     // OD Bomb Launcher 猎户座装置 炸弹发射器
+//				    "nb_bomblauncher",     // NB Bomb Launcher 新星爆裂驱动器 炸弹发射器
+//				    "tpc",                 // TPC 热脉冲加农炮
+				    "hephag",              // Hephag 赫菲斯托斯突击炮
+				    "mark9",               // Mark IX 马克 IX 自动炮
+				    "devastator",          // Devastator 蹂躏者加农炮
+				    "mjolnir",             // Mjolnir 雷神炮
+				    "hellbore",            // Hellbore 炼狱炮
+//				    "heavyac",             // Heavy AC 重型自动炮
+//				    "lrpdlaser",           // LRPD Laser LR PD 激光炮
+				    "guardian",            // Guardian 保卫者 PD 系统
+				    "lightac",             // Light AC 轻型自动炮
+//				    "lightag",             // Light AG 轻型突击炮
+				    "lightneedler",        // Light Needler 轻型针刺
+				    "railgun",             // Railgun 轨道炮
+				    "shredder",            // Shredder 噪音
+//				    "heavymortar",         // Heavy Mortar 重型迫击炮
+//				    "arbalest",            // Arbalest 劲弩自动炮
+				    "heavyneedler",        // Heavy Needler 重型针刺
+				    "multineedler",        // Multi Needler 风暴针刺
+//				    "gorgon_payload",      // Gorgon Payload 戈耳工 - 光束
+//				    "hydra_payload",       // Hydra Payload 九头蛇 - 光束
+				    "plasma",              // Plasma 等离子炮
+				    "autopulse",           // Autopulse 自动脉冲激光
+				    "gigacannon",          // Giga Cannon 千兆加农炮
+//				    "disintegrator",       // Disintegrator 裂解炮
+//				    "interdictorbeam",     // Interdictor Beam 指示光束
+//				    "lightmortar",         // Light Mortar 轻型迫击炮
+//				    "lightdualac",         // Light Dual AC 轻型双管自动炮
+//				    "mininglaser",         // Mining Laser 钻探激光炮
+				    "phasebeam",           // Phase Beam 相位长矛
+//				    "pulselaser",          // Pulse Laser 脉冲激光炮
+				    "heavyblaster",        // Heavy Blaster 重型冲击波
+//				    "kineticblaster",      // Kinetic Blaster 动能冲击波
+//				    "heavyburst",          // Heavy Burst 重型瞬发激光炮
+//				    "riftlance",           // Rift Lance 裂隙长矛
+//				    "riftbeam",            // Rift Beam 裂隙射线
+//				    "cryoblaster",         // Cryoblaster 低温冲击波
+//				    "fragbomb",            // Fragbomb 毒刺-级感应空雷
+//				    "flak",                // Flak 高射炮
+//				    "ioncannon",           // Ion Cannon 离子炮
+//				    "ioncannon_fighter",   // Ion Cannon Fighter 离子炮 (战机型)
+//				    "irpulse",             // IR Pulse Laser IR 脉冲激光炮
+//				    "irpulse_fighter",     // IR Pulse Laser Fighter IR 脉冲激光炮 (战机型)
+//				    "pdburst",             // PD Burst 瞬发 PD 激光炮
+//				    "pdburst_fighter",     // PD Burst Fighter 瞬发 PD 激光炮 (战机型)
+				    "miningblaster",       // Mining Blaster 钻探冲击波
+				    "ionpulser",           // Ion Pulser 离子脉冲
+//				    "minipulser",          // Mini Pulser 微型脉冲
+//				    "flarelauncher3",      // Flare Launcher 3 追踪热诱弹发射器
+//				    "motelauncher",        // Mote Launcher 光尘发射器
+//				    "motelauncher_hf",     // Mote Launcher HF 光尘发射器
+				    "heavymg",             // Heavy MG 重机枪
+				    "chaingun",            // Chaingun 突击链炮
+//				    "lightmortar_fighter", // Light Mortar (High Delay)
+//				    "dualflak",            // Dual Flak 双管高射炮
+//				    "pdlaser",             // PD Laser PD 激光炮
+				    "amblaster",           // AM Blaster 反物质冲击波
+//				    "cryoflux",            // Cryoflux 低温喷射器
+//				    "flarelauncher1",      // Flare Launcher 1 热诱弹发射器
+//				    "lightmg",             // Light MG 轻机枪
+//				    "lightdualmg",         // Light Dual MG 轻型双管机枪
+//				    "shockrepeater",       // Shock Repeater 电冲连发器
+				    "vulcan",              // Vulcan 火神炮
+//				    "canister_flak",       // Canister Flak 罐式高射炮
+				    "flarelauncher2",      // Flare Launcher 2 诱饵发射器
+				    "flarelauncher21"      // Flare Launcher 21 诱饵发射器 (单发)
+				);
+
 
 			for (String id : weaponIds) {
 				int cur = 0;
@@ -233,9 +344,36 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				}
 			}
 
-			// 5. 战机保底补给
-			List<String> fighterIds = Arrays.asList("trident_wing", "perdition_wing", "dagger_wing", "flash_wing",
-					"warthog_wing", "thunder_wing", "xyphos_wing");
+			// 5. 战机保底补给，同样，航程排序，名称和装配点见注释，想要多的自己开
+			List<String> fighterIds = Arrays.asList(
+				    "broadsword_wing",               // 宽剑战机 – 重型战斗机 – 10
+//				    "warthog_wing",                  // 野猪战机 – 重型战斗机 – 10
+//				    "thunder_wing",                  // 雷霆截击机 – 重型截击机 – 15
+//				    "gladius_wing",                  // 格拉迪乌斯截击机 – 重型截击机 – 10
+//				    "xyphos_wing",                   // 西福斯支援战机 – 支援战斗机 – 15
+				    "sarissa_wing",                  // 长矛支援战机 – 支援战斗机 – 10
+//				    "claw_wing",                     // 爪式战机 – 战斗机 – 8
+//				    "lux_wing",                      // 路克斯无人战机 – 无人战斗机 – 12
+//				    "spark_wing",                    // 火花无人截击机 – 无人截击机 – 10
+//				    "mining_drone_wing",             // 采矿无人机中队 – 无人机 – 10
+//				    "borer_wing",                    // 钻孔者无人机中队 – 无人机 – 5
+//				    "flash_wing",                    // 闪电无人轰炸机 – 无人轰炸机 – 18
+//				    "aspect_shock_wing",             // 震荡无常机队 – 无常 – 20
+//				    "aspect_shieldbreaker_wing",     // 破盾无常机队 – 无常 – 20
+//				    "aspect_attack_wing",            // 攻击无常机队 – 无常 – 20
+//				    "aspect_missile_wing",           // 导弹无常机队 – 无常 – 20
+//				    "talon_wing",                    // 猛爪截击机 – 截击机 – 5
+				    "trident_wing",                  // 三叉轰炸机 – 轰炸机 – 25
+//				    "cobra_wing",                    // 眼镜蛇轰炸机 – 轰炸机 – 20
+//				    "dagger_wing",                   // 匕首轰炸机 – 轰炸机 – 18
+				    "longbow_wing",                  // 长弓轰炸机 – 轰炸机 – 18
+//				    "hoplon_wing",                   // 希波隆轰炸机 – 轰炸机 – 15
+//				    "piranha_wing",                  // 食人鱼轰炸机 – 轰炸机 – 15
+				    "perdition_wing",                // 毁灭轰炸机 – 轰炸机 – 15
+//				    "terminator_wing",                // 终结者点防无人机 – 点防无人机 – 20
+				    "wasp_wing"                     // 黄蜂无人截击机 – 无人截击机 – 5
+				);
+
 			for (String id : fighterIds) {
 				int cur = 0;
 				try {
