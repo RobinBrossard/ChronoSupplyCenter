@@ -11,9 +11,12 @@ import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 
 /**
  * “时光科技”——所有功能硬编码，含注释说明。 动态稀有物品产出 & 指定武器/战机/基础物资 保底补给
@@ -102,6 +105,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				fleetSizeFlat, "时光科技—舰队规模 +" + (int) fleetSizeFlat);
 		market.getStats().getDynamic().getMod(Stats.PRODUCTION_QUALITY_MOD).modifyFlat(getModId() + "_quality",
 				qualityFlat, "时光科技—生产质量 +" + (int) qualityFlat);
+
 	}
 
 	@Override
@@ -132,10 +136,6 @@ public class ChronoSupplyCenter extends BaseIndustry {
 
 			// 3. 计算已经过去的天数
 			float daysPassed = clock.getElapsedDaysSince(lastTs);
-
-			// 4. 调试打印
-//			Global.getSector().getCampaignUI().addMessage(
-//					String.format("调试：上次ts=%d, 当前ts=%d, 已过天数=%.2f", lastTs, clock.getTimestamp(), daysPassed));
 
 			// 5. 判断间隔
 			if (daysPassed < DAYS_PER_CHECK) {
@@ -174,43 +174,63 @@ public class ChronoSupplyCenter extends BaseIndustry {
 					sc.addToCargoSafely(cargo);
 				}
 
+				// === 以下添加舰船到 storage 子市场 ===
+
+				// 初始化 mothballed ships 列表
+				cargo.initMothballedShips(market.getFactionId());
+
+				// 准备舰船 Hull ID 列表（代码注释为中文名称）
+				List<String> ships = Arrays.asList("swp_boss_doom", // 路西法
+						"swp_boss_dominator_luddic_path", // 统治者 (LP)
+						"swp_boss_frankenstein", // 弗兰肯斯坦
+						"swp_boss_odyssey", // 伊利亚特
+						"swp_boss_atlas", // 利维坦
+						"swp_boss_onslaught_luddic_path", // 攻势 (LP)
+						"swp_boss_onslaught", // 阿瑞斯
+						"swp_boss_conquest", // 尼姬
+						"swp_boss_paragon", // 宙斯
+//						"paragon", // 典范
+//						"pegasus", // 天马
+//						"onslaught", // 攻势
+//						"radiant", // 辐射
+//						"conquest", // 征服者
+//						"legion", // 军团
+//						"retribution", // 惩戒
+//						"nova", // 新星
+//						"astral", // 星体
+//						"ziggurat", // 通灵塔
+//						"prometheus2", // 普罗米修斯 Mk.II
+//						"invictus", // 不败
+//						"atlas2", // 阿特拉斯 Mk.II
+//						"dominator", // 统治者
+						"odyssey" // 奥德赛
+				);
+
+				for (String hullId : ships) {
+					addShipsToStorage(hullId, 1);
+				}
+
 				// 3) 打标记，后面绝不再来
 				data.put(blueprintKey, true);
 
 				// 弹出一次性提示
-				Global.getSector().getCampaignUI().addMessage("时光科技：已发放所有一次性蓝图包和加成稀有物");
+				Global.getSector().getCampaignUI().addMessage("时光科技：发放一次性蓝图包、稀有物和超级战舰奖励");
 			}
 
-			// 3. 稀有 special 按几率产出，增加趣味性 -- 不实用，暂时取消了。
-//            List<SpecialConfig> specials = Arrays.asList(
-//                new SpecialConfig("special", "sensor_array",            1, 0.50f),
-//                new SpecialConfig("special", "nanoforge",               1, 0.10f),
-//                new SpecialConfig("special", "drone_recovery_unit",     1, 0.25f),
-//                new SpecialConfig("special", "salvage_field_generator",1, 0.20f),
-//                new SpecialConfig("special", "ship_blueprint",          1, 0.50f)
-//            );
-//            for (SpecialConfig sc : specials) {
-//                int cur = sc.currentCount(cargo);
-//                if (cur < INVENTORY_THRESHOLD_SP && Math.random() < sc.chance) {
-//                    sc.addToCargoSafely(cargo);
-//                }
-//            }
-
 			// 4. 武器保底补给。列表是全部标准版武器，射程排序，打开了常用好用和稀有的，其它的想要自己开，但有些特殊的，是装不了的，只占格子
-			List<String> weaponIds = Arrays.asList(
-				    "pilum",               // Pilum 短矛 LRM 发射器
-				    "pilum_large",         // Pilum Large 短矛 LRM 投射舱
+			List<String> weaponIds = Arrays.asList("pilum", // Pilum 短矛 LRM 发射器
+					"pilum_large", // Pilum Large 短矛 LRM 投射舱
 //				    "harpoon",             // Harpoon 鱼叉 MRM
 //				    "harpoon_single",      // Harpoon Single 鱼叉 MRM (双发)
 //				    "harpoonpod",          // Harpoon Pod 鱼叉 MRM 发射舱
-				    "hurricane",           // Hurricane 飓风 MIRV 发射器
-				    "hydra",               // Hydra 九头蛇 MDEM 发射器
+					"hurricane", // Hurricane 飓风 MIRV 发射器
+					"hydra", // Hydra 九头蛇 MDEM 发射器
 //				    "squall",              // Squall 暴风 MLRS
 //				    "resonatormrm",        // Resonator MRM 共鸣体 MRM 发射器
 //				    "bomb",                // Bomb 标准炸弹发射架
-				    "heatseeker",          // Heatseeker 火蛇 MRM
-				    "dragon",              // Dragon 龙炎 DEM 鱼雷
-				    "salamanderpod",       // Salamander Pod 火蛇 MRM 发射舱
+					"heatseeker", // Heatseeker 火蛇 MRM
+					"dragon", // Dragon 龙炎 DEM 鱼雷
+					"salamanderpod", // Salamander Pod 火蛇 MRM 发射舱
 //				    "phasecl_bomber",      // Phasecl Bomber 感应空雷发射器 (战机型)
 //				    "dragonpod",           // Dragon Pod 龙炎 鱼雷 发射舱
 //				    "rifttorpedo",         // Rift Torpedo 裂隙鱼雷发射器
@@ -218,42 +238,42 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "annihilator",         // Annihilator 歼灭者火箭炮
 //				    "annihilator_fighter", // Annihilator Fighter 歼灭者火箭发射器
 //				    "breach",              // Breach 破舱 SRM
-				    "gorgon",              // Gorgon 戈耳工 DEM SRM
+					"gorgon", // Gorgon 戈耳工 DEM SRM
 //				    "gorgonpod",           // Gorgon Pod 戈耳工 SRM 发射舱
 //				    "breachpod",           // Breach Pod 破舱 SRM 发射舱
 //				    "annihilatorpod",      // Annihilator Pod 歼灭者火箭发射舱
 //				    "terminator_missile",  // Terminator Missile 终结者导弹改装
 //				    "locust",              // Locust 蝗虫 SRM 发射器
-				    "gauss",               // Gauss 高斯炮
-				    "reaper",              // Reaper 死神鱼雷
-				    "atropos",             // Atropos 阿特罗波斯鱼雷发射架
-				    "atropos_single",      // Atropos Single 阿特罗波斯鱼雷 (单发)
-				    "hammer",              // Hammer 大锤级鱼雷
-				    "hammer_single",       // Hammer Single 大锤级鱼雷 (单发)
-				    "sabot",               // Sabot 赛博 SRM
-				    "sabot_single",        // Sabot Single 赛博 SRM (双发)
-				    "sabot_fighter",       // Sabot Fighter 赛博 SRM (单发)
-				    "gazer",               // Gazer 眼魔 DEM SRM
-				    "gazerpod",            // Gazer Pod 眼魔 SRM 发射舱
-				    "sabotpod",            // Sabot Pod 赛博 SRM 发射舱
+					"gauss", // Gauss 高斯炮
+					"reaper", // Reaper 死神鱼雷
+					"atropos", // Atropos 阿特罗波斯鱼雷发射架
+					"atropos_single", // Atropos Single 阿特罗波斯鱼雷 (单发)
+					"hammer", // Hammer 大锤级鱼雷
+					"hammer_single", // Hammer Single 大锤级鱼雷 (单发)
+					"sabot", // Sabot 赛博 SRM
+					"sabot_single", // Sabot Single 赛博 SRM (双发)
+					"sabot_fighter", // Sabot Fighter 赛博 SRM (单发)
+					"gazer", // Gazer 眼魔 DEM SRM
+					"gazerpod", // Gazer Pod 眼魔 SRM 发射舱
+					"sabotpod", // Sabot Pod 赛博 SRM 发射舱
 //				    "jackhammer",          // Jackhammer 气锤
-				    "typhoon",             // Typhoon 台风级死神鱼雷发射器
-				    "cyclone",             // Cyclone 旋风型死神鱼雷发射器
-				    "hammerrack",          // Hammerrack 大锤鱼雷发射舱
-				    "amsrm",               // AMSRM 反物质 SRM 发射器
-				    "heavymauler",         // Heavy Mauler 重型撕裂者
-				    "hveldriver",          // Hveldriver 高速打击者
-				    "swarmer",             // Swarmer 蜂群 SRM 发射器
-				    "swarmer_fighter",     // Swarmer Fighter 蜂群 SRM 发射器
-				    "gazer_payload",       // Gazer Payload 眼魔 - 光束
-				    "dragon_payload",      // Dragon Payload 龙炎 - 光束
-				    "phasecl",             // Phasecl 感应空雷发射器
+					"typhoon", // Typhoon 台风级死神鱼雷发射器
+					"cyclone", // Cyclone 旋风型死神鱼雷发射器
+					"hammerrack", // Hammerrack 大锤鱼雷发射舱
+					"amsrm", // AMSRM 反物质 SRM 发射器
+					"heavymauler", // Heavy Mauler 重型撕裂者
+					"hveldriver", // Hveldriver 高速打击者
+					"swarmer", // Swarmer 蜂群 SRM 发射器
+					"swarmer_fighter", // Swarmer Fighter 蜂群 SRM 发射器
+					"gazer_payload", // Gazer Payload 眼魔 - 光束
+					"dragon_payload", // Dragon Payload 龙炎 - 光束
+					"phasecl", // Phasecl 感应空雷发射器
 //				    "taclaser",            // Taclaser 战术激光炮
-				    "gravitonbeam",        // Graviton Beam 引力子束
-				    "irautolance",         // IRAutoLance IR 自动长矛
-				    "ionbeam",             // Ion Beam 离子束
-				    "hil",                 // HIL 高强度激光
-				    "tachyonlance",        // Tachyon Lance 速子长矛
+					"gravitonbeam", // Graviton Beam 引力子束
+					"irautolance", // IRAutoLance IR 自动长矛
+					"ionbeam", // Ion Beam 离子束
+					"hil", // HIL 高强度激光
+					"tachyonlance", // Tachyon Lance 速子长矛
 //				    "riftcascade",         // Rift Cascade 裂隙洪流发射极
 //				    "vpdriver",            // VPDriver 不稳定粒子投射器
 //				    "realitydisruptor",    // Reality Disruptor 现实干扰器
@@ -262,36 +282,36 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "od_bomblauncher",     // OD Bomb Launcher 猎户座装置 炸弹发射器
 //				    "nb_bomblauncher",     // NB Bomb Launcher 新星爆裂驱动器 炸弹发射器
 //				    "tpc",                 // TPC 热脉冲加农炮
-				    "hephag",              // Hephag 赫菲斯托斯突击炮
-				    "mark9",               // Mark IX 马克 IX 自动炮
-				    "devastator",          // Devastator 蹂躏者加农炮
-				    "mjolnir",             // Mjolnir 雷神炮
-				    "hellbore",            // Hellbore 炼狱炮
+					"hephag", // Hephag 赫菲斯托斯突击炮
+					"mark9", // Mark IX 马克 IX 自动炮
+					"devastator", // Devastator 蹂躏者加农炮
+					"mjolnir", // Mjolnir 雷神炮
+					"hellbore", // Hellbore 炼狱炮
 //				    "heavyac",             // Heavy AC 重型自动炮
 //				    "lrpdlaser",           // LRPD Laser LR PD 激光炮
-				    "guardian",            // Guardian 保卫者 PD 系统
-				    "lightac",             // Light AC 轻型自动炮
+					"guardian", // Guardian 保卫者 PD 系统
+					"lightac", // Light AC 轻型自动炮
 //				    "lightag",             // Light AG 轻型突击炮
-				    "lightneedler",        // Light Needler 轻型针刺
-				    "railgun",             // Railgun 轨道炮
-				    "shredder",            // Shredder 噪音
+					"lightneedler", // Light Needler 轻型针刺
+					"railgun", // Railgun 轨道炮
+					"shredder", // Shredder 噪音
 //				    "heavymortar",         // Heavy Mortar 重型迫击炮
 //				    "arbalest",            // Arbalest 劲弩自动炮
-				    "heavyneedler",        // Heavy Needler 重型针刺
-				    "multineedler",        // Multi Needler 风暴针刺
+					"heavyneedler", // Heavy Needler 重型针刺
+					"multineedler", // Multi Needler 风暴针刺
 //				    "gorgon_payload",      // Gorgon Payload 戈耳工 - 光束
 //				    "hydra_payload",       // Hydra Payload 九头蛇 - 光束
-				    "plasma",              // Plasma 等离子炮
-				    "autopulse",           // Autopulse 自动脉冲激光
-				    "gigacannon",          // Giga Cannon 千兆加农炮
+					"plasma", // Plasma 等离子炮
+					"autopulse", // Autopulse 自动脉冲激光
+					"gigacannon", // Giga Cannon 千兆加农炮
 //				    "disintegrator",       // Disintegrator 裂解炮
 //				    "interdictorbeam",     // Interdictor Beam 指示光束
 //				    "lightmortar",         // Light Mortar 轻型迫击炮
 //				    "lightdualac",         // Light Dual AC 轻型双管自动炮
 //				    "mininglaser",         // Mining Laser 钻探激光炮
-				    "phasebeam",           // Phase Beam 相位长矛
+					"phasebeam", // Phase Beam 相位长矛
 //				    "pulselaser",          // Pulse Laser 脉冲激光炮
-				    "heavyblaster",        // Heavy Blaster 重型冲击波
+					"heavyblaster", // Heavy Blaster 重型冲击波
 //				    "kineticblaster",      // Kinetic Blaster 动能冲击波
 //				    "heavyburst",          // Heavy Burst 重型瞬发激光炮
 //				    "riftlance",           // Rift Lance 裂隙长矛
@@ -305,29 +325,28 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "irpulse_fighter",     // IR Pulse Laser Fighter IR 脉冲激光炮 (战机型)
 //				    "pdburst",             // PD Burst 瞬发 PD 激光炮
 //				    "pdburst_fighter",     // PD Burst Fighter 瞬发 PD 激光炮 (战机型)
-				    "miningblaster",       // Mining Blaster 钻探冲击波
-				    "ionpulser",           // Ion Pulser 离子脉冲
+					"miningblaster", // Mining Blaster 钻探冲击波
+					"ionpulser", // Ion Pulser 离子脉冲
 //				    "minipulser",          // Mini Pulser 微型脉冲
 //				    "flarelauncher3",      // Flare Launcher 3 追踪热诱弹发射器
 //				    "motelauncher",        // Mote Launcher 光尘发射器
 //				    "motelauncher_hf",     // Mote Launcher HF 光尘发射器
-				    "heavymg",             // Heavy MG 重机枪
-				    "chaingun",            // Chaingun 突击链炮
+					"heavymg", // Heavy MG 重机枪
+					"chaingun", // Chaingun 突击链炮
 //				    "lightmortar_fighter", // Light Mortar (High Delay)
 //				    "dualflak",            // Dual Flak 双管高射炮
 //				    "pdlaser",             // PD Laser PD 激光炮
-				    "amblaster",           // AM Blaster 反物质冲击波
+					"amblaster", // AM Blaster 反物质冲击波
 //				    "cryoflux",            // Cryoflux 低温喷射器
 //				    "flarelauncher1",      // Flare Launcher 1 热诱弹发射器
 //				    "lightmg",             // Light MG 轻机枪
 //				    "lightdualmg",         // Light Dual MG 轻型双管机枪
 //				    "shockrepeater",       // Shock Repeater 电冲连发器
-				    "vulcan",              // Vulcan 火神炮
+					"vulcan", // Vulcan 火神炮
 //				    "canister_flak",       // Canister Flak 罐式高射炮
-				    "flarelauncher2",      // Flare Launcher 2 诱饵发射器
-				    "flarelauncher21"      // Flare Launcher 21 诱饵发射器 (单发)
-				);
-
+					"flarelauncher2", // Flare Launcher 2 诱饵发射器
+					"flarelauncher21" // Flare Launcher 21 诱饵发射器 (单发)
+			);
 
 			for (String id : weaponIds) {
 				int cur = 0;
@@ -344,14 +363,13 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				}
 			}
 
-			// 5. 战机保底补给，同样，航程排序，名称和装配点见注释，想要多的自己开
-			List<String> fighterIds = Arrays.asList(
-				    "broadsword_wing",               // 宽剑战机 – 重型战斗机 – 10
+			// 5. 战机保底补给，同样，航程排序，名称和装配点见注释，想要多的自己开。注释为战机名称，类型，装配点
+			List<String> fighterIds = Arrays.asList("broadsword_wing", // 宽剑战机 – 重型战斗机 – 10
 //				    "warthog_wing",                  // 野猪战机 – 重型战斗机 – 10
 //				    "thunder_wing",                  // 雷霆截击机 – 重型截击机 – 15
 //				    "gladius_wing",                  // 格拉迪乌斯截击机 – 重型截击机 – 10
 //				    "xyphos_wing",                   // 西福斯支援战机 – 支援战斗机 – 15
-				    "sarissa_wing",                  // 长矛支援战机 – 支援战斗机 – 10
+					"sarissa_wing", // 长矛支援战机 – 支援战斗机 – 10
 //				    "claw_wing",                     // 爪式战机 – 战斗机 – 8
 //				    "lux_wing",                      // 路克斯无人战机 – 无人战斗机 – 12
 //				    "spark_wing",                    // 火花无人截击机 – 无人截击机 – 10
@@ -363,16 +381,16 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "aspect_attack_wing",            // 攻击无常机队 – 无常 – 20
 //				    "aspect_missile_wing",           // 导弹无常机队 – 无常 – 20
 //				    "talon_wing",                    // 猛爪截击机 – 截击机 – 5
-				    "trident_wing",                  // 三叉轰炸机 – 轰炸机 – 25
+					"trident_wing", // 三叉轰炸机 – 轰炸机 – 25
 //				    "cobra_wing",                    // 眼镜蛇轰炸机 – 轰炸机 – 20
 //				    "dagger_wing",                   // 匕首轰炸机 – 轰炸机 – 18
-				    "longbow_wing",                  // 长弓轰炸机 – 轰炸机 – 18
+					"longbow_wing", // 长弓轰炸机 – 轰炸机 – 18
 //				    "hoplon_wing",                   // 希波隆轰炸机 – 轰炸机 – 15
 //				    "piranha_wing",                  // 食人鱼轰炸机 – 轰炸机 – 15
-				    "perdition_wing",                // 毁灭轰炸机 – 轰炸机 – 15
+					"perdition_wing", // 毁灭轰炸机 – 轰炸机 – 15
 //				    "terminator_wing",                // 终结者点防无人机 – 点防无人机 – 20
-				    "wasp_wing"                     // 黄蜂无人截击机 – 无人截击机 – 5
-				);
+					"wasp_wing" // 黄蜂无人截击机 – 无人截击机 – 5
+			);
 
 			for (String id : fighterIds) {
 				int cur = 0;
@@ -427,13 +445,13 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			// 8. 工革宠物补给（库存<阈值 & 单次上限）
 			indevo.industries.petshop.memory.Pet pet;
 
-			List<String> petIds = Arrays.asList("captain", // 前海盗舰长
-					"lordandsaviour", // 护国公 Foog 二世
-					"slaghound", // 矿渣猎犬
-					"goopuppies", // 凝胶狗
-					"voidsquid", // 星缘乌贼
-					"bugdog", // 漏洞犬
-					"schafunschaf" // 虚空羊
+			List<String> petIds = Arrays.asList("IndEvo_captain", // 前海盗舰长
+					"IndEvo_lordandsaviour", // 护国公 Foog 二世
+					"IndEvo_slaghound", // 矿渣猎犬
+					"IndEvo_goopuppies", // 凝胶狗
+					"IndEvo_voidsquid", // 星缘乌贼
+					"IndEvo_bugdog", // 漏洞犬
+					"IndEvo_schafunschaf" // 虚空羊
 			);
 
 			for (String petId : petIds) {
@@ -455,7 +473,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			// 最终提示 打搅人，默认关上。
 			// Global.getSector().getCampaignUI().addMessage("时光科技本期已完成所有补给，详见储存舱。");
 
-		} catch (Throwable t) {
+		} catch (
+
+		Throwable t) {
 			Global.getLogger(getClass()).error("ChronoSupplyCenter.advance 出错", t);
 		}
 	}
@@ -510,5 +530,55 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			} catch (Exception ignore) {
 			}
 		}
+	}
+
+	/**
+	 * 向 storage 仓库中添加指定数量的舰船，仅在尚未存在时进行。
+	 *
+	 * @param hullId 舰船 Hull Spec ID
+	 * @param amount 添加数量
+	 */
+	/**
+	 * 向 storage 仓库中添加指定数量的舰船，仅在尚未存在时进行。
+	 * 
+	 * @param hullId 舰船 Hull Spec ID
+	 * @param amount 添加数量
+	 */
+	// 向 storage 子市场添加新舰船，仅在准备好后执行一次
+	private void addShipsToStorage(String hullId, int amount) {
+		if (market == null)
+			return;
+		SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+		if (storage == null) {
+			Global.getLogger(getClass()).warn("addShipsToStorage: 找不到 storage 子市场");
+			return;
+		}
+		CargoAPI cargo = storage.getCargo();
+		// 初始化 mothballed ships 列表
+		cargo.initMothballedShips(market.getFactionId());
+
+		// 获取 hullId 对应的默认变体ID（通常为 hullId + "_Hull"）
+		String variantId = hullId + "_Hull";
+		if (Global.getSettings().getVariant(variantId) == null) {
+			Global.getLogger(getClass()).warn("addShipsToStorage: 未找到默认变体 " + variantId);
+			return;
+		}
+
+		// 创建并添加指定数量的新舰船实例
+		for (int i = 0; i < amount; i++) {
+			try {
+				FleetMemberAPI newShip = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+				cargo.getMothballedShips().addFleetMember(newShip);
+			} catch (Exception e) {
+				Global.getLogger(getClass()).warn("addShipsToStorage: 创建或添加舰船失败 " + variantId);
+				break;
+			}
+		}
+
+		// 对仓库内容排序
+		cargo.sort();
+		// 提示玩家--关闭消息打搅
+		// Global.getSector().getCampaignUI().addMessage(String.format("时光科技：已向仓库新增舰船 %s
+		// ×%d", variantId, amount));
 	}
 }
