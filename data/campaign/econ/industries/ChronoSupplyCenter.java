@@ -8,6 +8,7 @@ import java.util.Map;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
@@ -181,29 +182,33 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				cargo.initMothballedShips(market.getFactionId());
 
 				// 准备舰船 Hull ID 列表（代码注释为中文名称）
-				List<String> ships = Arrays.asList("swp_boss_doom", // 路西法
-						"swp_boss_dominator_luddic_path", // 统治者 (LP)
-						"swp_boss_frankenstein", // 弗兰肯斯坦
-						"swp_boss_odyssey", // 伊利亚特
-						"swp_boss_atlas", // 利维坦
-						"swp_boss_onslaught_luddic_path", // 攻势 (LP)
-						"swp_boss_onslaught", // 阿瑞斯
-						"swp_boss_conquest", // 尼姬
-						"swp_boss_paragon", // 宙斯
-//						"paragon", // 典范
-//						"pegasus", // 天马
-//						"onslaught", // 攻势
-//						"radiant", // 辐射
-//						"conquest", // 征服者
-//						"legion", // 军团
-//						"retribution", // 惩戒
-//						"nova", // 新星
-//						"astral", // 星体
-//						"ziggurat", // 通灵塔
-//						"prometheus2", // 普罗米修斯 Mk.II
-//						"invictus", // 不败
-//						"atlas2", // 阿特拉斯 Mk.II
-//						"dominator", // 统治者
+				List<String> ships = Arrays.asList(
+//======= 下面这几个是  舰船/武器拓展 [Ship/Weapon Pack] MOD 的新增船。不过这个MOD优化可能有问题，卡机器
+//						"swp_boss_doom", // 路西法
+//						"swp_boss_dominator_luddic_path", // 统治者 (LP)
+//						"swp_boss_frankenstein", // 弗兰肯斯坦
+//						"swp_boss_odyssey", // 伊利亚特
+//						"swp_boss_atlas", // 利维坦
+//						"swp_boss_onslaught_luddic_path", // 攻势 (LP)
+//						"swp_boss_onslaught", // 阿瑞斯
+//						"swp_boss_conquest", // 尼姬
+//						"swp_boss_paragon", // 宙斯
+
+//======  以下是原版，放心用 
+						"paragon", // 典范
+						"pegasus", // 天马
+						"onslaught", // 攻势
+						"radiant", // 辐射
+						"conquest", // 征服者
+						"legion", // 军团
+						"retribution", // 惩戒
+						"nova", // 新星
+						"astral", // 星体
+						"ziggurat", // 通灵塔
+						"prometheus2", // 普罗米修斯 Mk.II
+						"invictus", // 不败
+						"atlas2", // 阿特拉斯 Mk.II
+						"dominator", // 统治者
 						"odyssey" // 奥德赛
 				);
 
@@ -246,7 +251,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "annihilator_fighter", // Annihilator Fighter 歼灭者火箭发射器
 //				    "breach",              // Breach 破舱 SRM
 					"gorgon", // Gorgon 戈耳工 DEM SRM
-//				    "gorgonpod",           // Gorgon Pod 戈耳工 SRM 发射舱
+					"gorgonpod", // Gorgon Pod 戈耳工 SRM 发射舱
 //				    "breachpod",           // Breach Pod 破舱 SRM 发射舱
 //				    "annihilatorpod",      // Annihilator Pod 歼灭者火箭发射舱
 //				    "terminator_missile",  // Terminator Missile 终结者导弹改装
@@ -272,8 +277,8 @@ public class ChronoSupplyCenter extends BaseIndustry {
 					"hveldriver", // Hveldriver 高速打击者
 					"swarmer", // Swarmer 蜂群 SRM 发射器
 					"swarmer_fighter", // Swarmer Fighter 蜂群 SRM 发射器
-					"gazer_payload", // Gazer Payload 眼魔 - 光束
-					"dragon_payload", // Dragon Payload 龙炎 - 光束
+//					"gazer_payload", // Gazer Payload 眼魔 - 光束
+//					"dragon_payload", // Dragon Payload 龙炎 - 光束
 					"phasecl", // Phasecl 感应空雷发射器
 //				    "taclaser",            // Taclaser 战术激光炮
 					"gravitonbeam", // Graviton Beam 引力子束
@@ -348,11 +353,11 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "flarelauncher1",      // Flare Launcher 1 热诱弹发射器
 //				    "lightmg",             // Light MG 轻机枪
 //				    "lightdualmg",         // Light Dual MG 轻型双管机枪
-//				    "shockrepeater",       // Shock Repeater 电冲连发器
-					"vulcan", // Vulcan 火神炮
+					"shockrepeater", // Shock Repeater 电冲连发器
 //				    "canister_flak",       // Canister Flak 罐式高射炮
-					"flarelauncher2", // Flare Launcher 2 诱饵发射器
-					"flarelauncher21" // Flare Launcher 21 诱饵发射器 (单发)
+//					"flarelauncher2", // Flare Launcher 2 诱饵发射器
+//					"flarelauncher21", // Flare Launcher 21 诱饵发射器 (单发)
+					"vulcan" // Vulcan 火神炮
 			);
 
 			for (String id : weaponIds) {
@@ -412,6 +417,16 @@ public class ChronoSupplyCenter extends BaseIndustry {
 					} catch (Exception ignore) {
 					}
 				}
+			}
+
+			// 保底最喜欢的战舰
+			// 准备舰船 Hull ID 列表（代码注释为中文名称）
+			List<String> ships = Arrays.asList("astral", // 星体
+					"odyssey" // 奥德赛
+			);
+
+			for (String hullId : ships) {
+				replenishmentShipsToStorage(hullId, 1);
 			}
 
 			// 6. AI 核心产出
@@ -551,7 +566,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	 * @param hullId 舰船 Hull Spec ID
 	 * @param amount 添加数量
 	 */
-	// 向 storage 子市场添加新舰船，仅在准备好后执行一次
+
 	private void addShipsToStorage(String hullId, int amount) {
 		if (market == null)
 			return;
@@ -588,4 +603,66 @@ public class ChronoSupplyCenter extends BaseIndustry {
 		// Global.getSector().getCampaignUI().addMessage(String.format("时光科技：已向仓库新增舰船 %s
 		// ×%d", variantId, amount));
 	}
+
+	/**
+	 * 向 storage 子市场补充舰船：只有当当前库存少于目标量时，才会创建并添加新舰船。
+	 *
+	 * @param hullId 舰船 Hull Spec ID（如 "paragon"）
+	 * @param amount 期望的库存数量
+	 */
+	private void replenishmentShipsToStorage(String hullId, int amount) {
+		if (market == null)
+			return;
+
+		SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+		if (storage == null) {
+			Global.getLogger(getClass()).warn("addShipsToStorage: 找不到 storage 子市场");
+			return;
+		}
+
+		CargoAPI cargo = storage.getCargo();
+		// 初始化 mothballed ships 列表
+		cargo.initMothballedShips(market.getFactionId());
+
+		// 推导默认变体 ID
+		String variantId = hullId + "_Hull";
+		if (Global.getSettings().getVariant(variantId) == null) {
+			Global.getLogger(getClass()).warn("addShipsToStorage: 未找到默认变体 " + variantId);
+			return;
+		}
+
+		// 统计当前库存数量
+		FleetDataAPI mothballed = cargo.getMothballedShips();
+		int currentCount = 0;
+		for (FleetMemberAPI member : mothballed.getMembersListCopy()) {
+			if (variantId.equals(member.getVariant().getHullVariantId())) {
+				currentCount++;
+			}
+		}
+
+		// 库存已足够，直接返回
+		if (currentCount >= amount) {
+			return;
+		}
+
+		// 计算缺口并补充
+		int toAdd = amount - currentCount;
+		for (int i = 0; i < toAdd; i++) {
+			try {
+				FleetMemberAPI newShip = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+				cargo.getMothballedShips().addFleetMember(newShip);
+			} catch (Exception e) {
+				Global.getLogger(getClass()).warn("addShipsToStorage: 创建或添加舰船失败 " + variantId);
+				break;
+			}
+		}
+
+		// 对仓库内容排序
+		cargo.sort();
+		// 如需提示玩家可取消下行注释
+		// Global.getSector().getCampaignUI().addMessage(
+		// String.format("时光科技：已向仓库补充舰船 %s ×%d", variantId, toAdd)
+		// );
+	}
+
 }
