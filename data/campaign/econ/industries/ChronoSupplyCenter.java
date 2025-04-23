@@ -1,5 +1,6 @@
 package data.campaign.econ.industries;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -209,6 +210,12 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				for (String hullId : ships) {
 					addShipsToStorage(hullId, 1);
 				}
+
+				// 给玩家增加一千万资金
+				CargoAPI playerCargo = Global.getSector().getPlayerFleet().getCargo();
+				playerCargo.getCredits().add(10000000f);
+				Color goldColor = new Color(255, 215, 0);
+				Global.getSector().getCampaignUI().addMessage("你小时候的邻居王叔叔过世了，给你留下的大笔遗产已到账", goldColor);
 
 				// 3) 打标记，后面绝不再来
 				data.put(blueprintKey, true);
