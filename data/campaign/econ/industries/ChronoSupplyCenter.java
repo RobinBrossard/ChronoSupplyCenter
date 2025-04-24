@@ -2,12 +2,15 @@ package data.campaign.econ.industries;
 
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
@@ -129,9 +132,11 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			String blueprintKey = getModId() + "_ChronoSupplyCenter_onetime_given";
 			Map<String, Object> data = Global.getSector().getPersistentData();
 			if (!data.containsKey(blueprintKey)) {
-				giveSpecialItems(cargo);
+				giveOneTimeSpecialItems(cargo);
 				giveOneTimeShips(cargo);
 				giveOneTimeFunds();
+
+				// 标记一次性发放物品过了
 				data.put(blueprintKey, true);
 				Global.getSector().getCampaignUI().addMessage("你小时候的邻居王叔叔过世了，给你留下的大笔遗产已到账", new Color(255, 215, 0));
 				Global.getSector().getCampaignUI().addMessage("时光科技：发放一次性蓝图包、稀有物和超级战舰奖励");
@@ -154,7 +159,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 
 	// ==================== 私有方法 ====================
 
-	private void giveSpecialItems(CargoAPI cargo) {
+	private void giveOneTimeSpecialItems(CargoAPI cargo) {
 		List<SpecialConfig> specials = Arrays.asList(new SpecialConfig("special", "sensor_array", 1, 1f), // 感知矩阵
 				new SpecialConfig("special", "pristine_nanoforge", 1, 1f), // pristine_nanoforge 完好的纳米锻炉
 				new SpecialConfig("special", "LC_package", 1, 1f), // LC_package 卢德教会蓝图包
@@ -292,7 +297,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				"mjolnir", // Mjolnir 雷神炮
 				"hellbore", // Hellbore 炼狱炮
 //				    "heavyac",             // Heavy AC 重型自动炮
-//				    "lrpdlaser",           // LRPD Laser LR PD 激光炮
+				"lrpdlaser", // LRPD Laser LR PD 激光炮
 				"guardian", // Guardian 保卫者 PD 系统
 				"lightac", // Light AC 轻型自动炮
 //				    "lightag",             // Light AG 轻型突击炮
@@ -419,17 +424,46 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishPets(CargoAPI cargo) {
-		List<String> petIds = Arrays.asList("IndEvo_captain", // 前海盗舰长
-				"IndEvo_lordandsaviour", // 护国公 Foog 二世
-				"IndEvo_slaghound", // 矿渣猎犬
-				"IndEvo_goopuppies", // 凝胶狗
-				"IndEvo_voidsquid", // 星缘乌贼
-				"IndEvo_bugdog", // 漏洞犬
-				"IndEvo_schafunschaf" // 虚空羊
+		// 要有工革的包
+		List<String> allSubtypes = Arrays.asList("captain", // 前海盗舰长
+				"mechiders", // 工程蜘
+				"tammy", // 塔米
+				"hive", // 蓝夹克蜂箱
+				"kaysaar", // 灰烬猫
+				"jungleshark", // 丛林鲨
+				"lober", // 帝龙虾
+				"slaghound", // 矿渣猎犬
+				"goopuppies", // 凝胶狗
+				"voidsquid", // 星缘乌贼
+				"lordandsaviour", // 护国公 Foog 二世
+				"fairy" // 发条精灵
 		);
-		for (String id : petIds) {
-			addCommodity(cargo, id, PET_THRESHOLD, MAX_PET_ADD);
+
+		// 1) 扫描现有的所有 PetBox subtype
+		Set<String> existing = new HashSet<String>();
+		for (CargoStackAPI stack : cargo.getStacksCopy()) {
+			if (!stack.isSpecialStack())
+				continue;
+			SpecialItemData sid = stack.getSpecialDataIfSpecial();
+			if (!"IndEvo_PetBox".equals(sid.getId()))
+				continue;
+			existing.add(sid.getData());
 		}
+
+		// 2) 对比 & 补齐
+		for (String subtype : allSubtypes) {
+			if (existing.contains(subtype)) {
+				// 已有则跳过
+				continue;
+			}
+			// 新增一个缺失的冷冻舱
+			SpecialItemData box = new SpecialItemData("IndEvo_PetBox", subtype);
+			cargo.addSpecial(box, 1);
+			Global.getLogger(getClass()).info("Added PetBox subtype: " + subtype);
+		}
+
+		// 3) （可选）排序一下
+		cargo.sort();
 	}
 
 	private void addCommodity(CargoAPI cargo, String id, int threshold, int maxAdd) {
