@@ -22,8 +22,8 @@ public class FleetDailyResupply implements EveryFrameScript {
 	private static final int SUPPLIES_BATCH = 50; // 每次补给量
 	private static final int FUEL_THRESHOLD = 50; // 燃料阈值
 	private static final int FUEL_BATCH = 50; // 每次补给量
-	private static final float CR_THRESHOLD = 0.5f; // CR阈值
-	private static final float CR_RECOVERY_AMOUNT = 0.1f; // 每次恢复CR量（10%）
+	private static final float CR_THRESHOLD = 0.5f; // CR阈值，兼顾自动船，0.5比较好
+	private static final float CR_RECOVERY_AMOUNT = 0.5f; // 每次恢复CR量（50%）
 
 	private final IntervalUtil tracker = new IntervalUtil(INTERVAL_DAYS, INTERVAL_DAYS);
 
@@ -50,11 +50,20 @@ public class FleetDailyResupply implements EveryFrameScript {
 		CargoAPI cargo = fleet.getCargo();
 
 		checkAndSupplySupplies(cargo);
-//		if (checkAndSupplyFuel(cargo)) {
-//			logCargoContents(cargo);
-//		}
-
+		checkAndSupplyFuel(cargo);
 		checkAndRestoreFleetCR(fleet);
+		checkAndGiveFunds();
+	}
+
+	/** V5 500，我是秦始皇 */
+	private void checkAndGiveFunds() {
+		float money = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+		if (money < 1000000f) {
+			Global.getSector().getPlayerFleet().getCargo().getCredits().add(10000000f);
+			Color goldColor = new Color(255, 215, 0);
+			Global.getSector().getCampaignUI().addMessage("你又一笔遗产到账，略解燃眉之急", goldColor);
+		}
+
 	}
 
 	/** 检查并补给补给品 */
@@ -73,19 +82,34 @@ public class FleetDailyResupply implements EveryFrameScript {
 	 * 
 	 * @return 如果进行了补给则返回 true，否则 false
 	 */
-	private boolean checkAndSupplyFuel(CargoAPI cargo) {
+	private void checkAndSupplyFuel(CargoAPI cargo) {
 		float qty = cargo.getCommodityQuantity(Commodities.FUEL);
 		float space = cargo.getSpaceLeft();
 		if (qty < FUEL_THRESHOLD && space >= FUEL_BATCH) {
 			cargo.addCommodity(Commodities.FUEL, FUEL_BATCH);
 			Global.getSector().getCampaignUI().addMessage("--广告位招租：时光科技-哒哒送油快线 800-810-8888", Color.RED);
 			Global.getSector().getCampaignUI().addMessage("出门在外，油箱不能空，免费送您燃油一份");
-			return true;
+//			logCargoContents(cargo);
+			return;
 		}
-		return false;
+
 	}
 
-	/** 将舰队货舱内容详细地打印到日志 */
+	/** 检查并恢复舰队战备值（CR） */
+	private void checkAndRestoreFleetCR(CampaignFleetAPI fleet) {
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			RepairTrackerAPI rt = member.getRepairTracker();
+			if (rt != null && rt.getCR() < CR_THRESHOLD) {
+				float newCR = Math.min(1f, rt.getCR() + CR_RECOVERY_AMOUNT);
+				rt.setCR(newCR);
+				Color gold = new Color(255, 215, 0);
+				Global.getSector().getCampaignUI().addMessage("--广告位招租：时光科技-狗东快修 800-810-8888", gold);
+				Global.getSector().getCampaignUI().addMessage("道路千万条，安全第一条！帮你快速恢复了舰队CR");
+			}
+		}
+	}
+
+	/** 将舰队货舱内容详细地打印到日志，这是测试数据用的，不用管 */
 	private void logCargoContents(CargoAPI cargo) {
 		Global.getLogger(getClass()).info("== Fleet Cargo Contents ==");
 		for (CargoStackAPI stack : cargo.getStacksCopy()) {
@@ -146,17 +170,4 @@ public class FleetDailyResupply implements EveryFrameScript {
 		}
 	}
 
-	/** 检查并恢复舰队战备值（CR） */
-	private void checkAndRestoreFleetCR(CampaignFleetAPI fleet) {
-		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
-			RepairTrackerAPI rt = member.getRepairTracker();
-			if (rt != null && rt.getCR() < CR_THRESHOLD) {
-				float newCR = Math.min(1f, rt.getCR() + CR_RECOVERY_AMOUNT);
-				rt.setCR(newCR);
-				Color gold = new Color(255, 215, 0);
-				Global.getSector().getCampaignUI().addMessage("--广告位招租：时光科技-狗东快修 800-810-8888", gold);
-				Global.getSector().getCampaignUI().addMessage("道路千万条，安全第一条！帮你快速恢复了舰队CR");
-			}
-		}
-	}
 }

@@ -160,20 +160,48 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	// ==================== 私有方法 ====================
 
 	private void giveOneTimeSpecialItems(CargoAPI cargo) {
-		List<SpecialConfig> specials = Arrays.asList(new SpecialConfig("special", "sensor_array", 1, 1f), // 感知矩阵
-				new SpecialConfig("special", "pristine_nanoforge", 1, 1f), // pristine_nanoforge 完好的纳米锻炉
-				new SpecialConfig("special", "LC_package", 1, 1f), // LC_package 卢德教会蓝图包
-				new SpecialConfig("special", "LP_package", 1, 1f), // LP_package 卢德左径蓝图包
-				new SpecialConfig("special", "XIV_package", 1, 1f), // XIV_package 第十四战斗群蓝图包
-				new SpecialConfig("special", "drone_replicator", 1, 1f), // drone_replicator 战斗无人机复制器
-				new SpecialConfig("special", "fullerene_spool", 1, 1f), // fullerene_spool 富勒烯线轴
-				new SpecialConfig("special", "heg_aux_package", 1, 1f), // heg_aux_package 霸主军事配件蓝图包
-				new SpecialConfig("special", "high_tech_package", 1, 1f), // high_tech_package 扩展纪元蓝图包
-				new SpecialConfig("special", "low_tech_package", 1, 1f), // low_tech_package 主宰纪元蓝图包
-				new SpecialConfig("special", "midline_package", 1, 1f), // midline_package 核心纪元蓝图包
-				new SpecialConfig("special", "pirate_package", 1, 1f), // pirate_package 海盗蓝图包
-				new SpecialConfig("special", "plasma_dynamo", 1, 1f) // plasma_dynamo 等离子发电机
+		List<SpecialConfig> specials = Arrays.asList(
+		// ====== industry-slotted items ======
+//			    new SpecialConfig("special", "corrupted_nanoforge",      1, 1f), // 受损的纳米锻炉
+				new SpecialConfig("special", "pristine_nanoforge", 1, 1f), // 完好的纳米锻炉
+				new SpecialConfig("special", "synchrotron", 1, 1f), // 同步加速器核心
+				new SpecialConfig("special", "orbital_fusion_lamp", 1, 1f), // 轨道聚变射灯
+				new SpecialConfig("special", "coronal_portal", 1, 1f), // 超分流阀门
+				new SpecialConfig("special", "mantle_bore", 1, 1f), // 全自动地幔钻机
+				new SpecialConfig("special", "catalytic_core", 1, 1f), // 催化核心
+				new SpecialConfig("special", "soil_nanites", 1, 1f), // 土壤纳米物质
+				new SpecialConfig("special", "biofactory_embryo", 1, 1f), // 生物化工厂胚胎
+				new SpecialConfig("special", "fullerene_spool", 1, 1f), // 富勒烯线轴
+				new SpecialConfig("special", "plasma_dynamo", 1, 1f), // 等离子发电机
+				new SpecialConfig("special", "cryoarithmetic_engine", 1, 1f), // 低温运算引擎
+				new SpecialConfig("special", "dealmaker_holosuite", 1, 1f), // 全息交易撮合套件
+
+				// ====== blueprints ======
+				new SpecialConfig("special", "low_tech_package", 1, 1f), // 主宰纪元蓝图包
+				new SpecialConfig("special", "midline_package", 1, 1f), // 核心纪元蓝图包
+				new SpecialConfig("special", "high_tech_package", 1, 1f), // 扩展纪元蓝图包
+				new SpecialConfig("special", "missile_package", 1, 1f), // 导弹蓝图包
+				new SpecialConfig("special", "pirate_package", 1, 1f), // 海盗蓝图包
+				new SpecialConfig("special", "LP_package", 1, 1f), // 卢德左径蓝图包
+				new SpecialConfig("special", "LC_package", 1, 1f), // 卢德教会蓝图包
+				new SpecialConfig("special", "XIV_package", 1, 1f), // 第十四战斗群蓝图包
+				new SpecialConfig("special", "heg_aux_package", 1, 1f), // 霸主军事配件蓝图包
+
+				new SpecialConfig("special", "ship_bp", 1, 1f), // 基础舰船蓝图
+				new SpecialConfig("special", "weapon_bp", 1, 1f), // 基础武器蓝图
+				new SpecialConfig("special", "fighter_bp", 1, 1f), // 基础战机蓝图
+				new SpecialConfig("special", "industry_bp", 1, 1f), // 基础工业蓝图
+
+				// ====== other items ====== 剧情物品，不建议打开。一定要也可以
+//				new SpecialConfig("special", "janus", 1, 1f), // “双面神”装置
+//				new SpecialConfig("special", "planetkiller", 1, 1f), // 行星杀手
+//			    new SpecialConfig("special", "topographic_data",         1, 1f), // 超空间测绘数据
+//				new SpecialConfig("special", "wormhole_anchor", 1, 1f), // 虫洞锚定装置
+//				new SpecialConfig("special", "wormhole_scanner", 1, 1f), // 虫洞扫描仪
+
+				new SpecialConfig("special", "drone_replicator", 1, 1f) // 战斗无人机复制器
 		);
+
 		for (SpecialConfig sc : specials)
 			sc.addToCargoSafely(cargo);
 	}
@@ -206,6 +234,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				"invictus", // 不败
 				"atlas2", // 阿特拉斯 Mk.II
 				"dominator", // 统治者
+				"hyperion", // 亥伯龙
 				"odyssey" // 奥德赛
 		);
 		for (String h : ships)
@@ -214,6 +243,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 
 	private void replenishShips(CargoAPI cargo) {
 		List<String> ships = Arrays.asList("astral", // 星体
+				"hyperion", // 亥伯龙
 				"odyssey" // 奥德赛
 		);
 		for (String h : ships)
@@ -235,14 +265,14 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				"hurricane", // Hurricane 飓风 MIRV 发射器
 				"hydra", // Hydra 九头蛇 MDEM 发射器
 //				    "squall",              // Squall 暴风 MLRS
-//				    "resonatormrm",        // Resonator MRM 共鸣体 MRM 发射器
+				"resonatormrm", // Resonator MRM 共鸣体 MRM 发射器
 //				    "bomb",                // Bomb 标准炸弹发射架
 				"heatseeker", // Heatseeker 火蛇 MRM
 				"dragon", // Dragon 龙炎 DEM 鱼雷
 				"salamanderpod", // Salamander Pod 火蛇 MRM 发射舱
 //				    "phasecl_bomber",      // Phasecl Bomber 感应空雷发射器 (战机型)
 //				    "dragonpod",           // Dragon Pod 龙炎 鱼雷 发射舱
-//				    "rifttorpedo",         // Rift Torpedo 裂隙鱼雷发射器
+				"rifttorpedo", // Rift Torpedo 裂隙鱼雷发射器
 //				    "clusterbomb",         // Clusterbomb 毒刺-级感应空雷
 //				    "annihilator",         // Annihilator 歼灭者火箭炮
 //				    "annihilator_fighter", // Annihilator Fighter 歼灭者火箭发射器
@@ -283,9 +313,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				"ionbeam", // Ion Beam 离子束
 				"hil", // HIL 高强度激光
 				"tachyonlance", // Tachyon Lance 速子长矛
-//				    "riftcascade",         // Rift Cascade 裂隙洪流发射极
-//				    "vpdriver",            // VPDriver 不稳定粒子投射器
-//				    "realitydisruptor",    // Reality Disruptor 现实干扰器
+				"riftcascade", // Rift Cascade 裂隙洪流发射极
+				"vpdriver", // VPDriver 不稳定粒子投射器
+				"realitydisruptor", // Reality Disruptor 现实干扰器
 //				    "minelayer1",          // Minelayer I 感应空雷
 //				    "minelayer2",          // Minelayer II 重型感应空雷
 //				    "od_bomblauncher",     // OD Bomb Launcher 猎户座装置 炸弹发射器
@@ -313,7 +343,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				"plasma", // Plasma 等离子炮
 				"autopulse", // Autopulse 自动脉冲激光
 				"gigacannon", // Giga Cannon 千兆加农炮
-//				    "disintegrator",       // Disintegrator 裂解炮
+				"disintegrator", // Disintegrator 裂解炮
 //				    "interdictorbeam",     // Interdictor Beam 指示光束
 //				    "lightmortar",         // Light Mortar 轻型迫击炮
 //				    "lightdualac",         // Light Dual AC 轻型双管自动炮
@@ -323,9 +353,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				"heavyblaster", // Heavy Blaster 重型冲击波
 //				    "kineticblaster",      // Kinetic Blaster 动能冲击波
 //				    "heavyburst",          // Heavy Burst 重型瞬发激光炮
-//				    "riftlance",           // Rift Lance 裂隙长矛
-//				    "riftbeam",            // Rift Beam 裂隙射线
-//				    "cryoblaster",         // Cryoblaster 低温冲击波
+				"riftlance", // Rift Lance 裂隙长矛
+				"riftbeam", // Rift Beam 裂隙射线
+				"cryoblaster", // Cryoblaster 低温冲击波
 //				    "fragbomb",            // Fragbomb 毒刺-级感应空雷
 //				    "flak",                // Flak 高射炮
 //				    "ioncannon",           // Ion Cannon 离子炮
@@ -336,7 +366,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "pdburst_fighter",     // PD Burst Fighter 瞬发 PD 激光炮 (战机型)
 				"miningblaster", // Mining Blaster 钻探冲击波
 				"ionpulser", // Ion Pulser 离子脉冲
-//				    "minipulser",          // Mini Pulser 微型脉冲
+				"minipulser", // Mini Pulser 微型脉冲
 //				    "flarelauncher3",      // Flare Launcher 3 追踪热诱弹发射器
 //				    "motelauncher",        // Mote Launcher 光尘发射器
 //				    "motelauncher_hf",     // Mote Launcher HF 光尘发射器
@@ -346,7 +376,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "dualflak",            // Dual Flak 双管高射炮
 //				    "pdlaser",             // PD Laser PD 激光炮
 				"amblaster", // AM Blaster 反物质冲击波
-//				    "cryoflux",            // Cryoflux 低温喷射器
+				"cryoflux", // Cryoflux 低温喷射器
 //				    "flarelauncher1",      // Flare Launcher 1 热诱弹发射器
 //				    "lightmg",             // Light MG 轻机枪
 //				    "lightdualmg",         // Light Dual MG 轻型双管机枪
@@ -418,6 +448,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishCommodities(CargoAPI cargo) {
+		// 工革包的新增物品研究所和宠物需要
 		addCommodity(cargo, "IndEvo_rare_parts", RELIC_THRESHOLD, MAX_RELIC_ADD);
 		addCommodity(cargo, "IndEvo_parts", SHIP_PARTS_THRESHOLD, MAX_SHIP_PARTS_ADD);
 		addCommodity(cargo, "IndEvo_pet_food", PETFOOD_THRESHOLD, MAX_PETFOOD_ADD);
