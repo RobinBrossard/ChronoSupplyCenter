@@ -187,11 +187,6 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				new SpecialConfig("special", "XIV_package", 1, 1f), // 第十四战斗群蓝图包
 				new SpecialConfig("special", "heg_aux_package", 1, 1f), // 霸主军事配件蓝图包
 
-				new SpecialConfig("special", "ship_bp", 1, 1f), // 基础舰船蓝图
-				new SpecialConfig("special", "weapon_bp", 1, 1f), // 基础武器蓝图
-				new SpecialConfig("special", "fighter_bp", 1, 1f), // 基础战机蓝图
-				new SpecialConfig("special", "industry_bp", 1, 1f), // 基础工业蓝图
-
 				// ====== other items ====== 剧情物品，不建议打开。一定要也可以
 //				new SpecialConfig("special", "janus", 1, 1f), // “双面神”装置
 //				new SpecialConfig("special", "planetkiller", 1, 1f), // 行星杀手

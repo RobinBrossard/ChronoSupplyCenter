@@ -19,10 +19,10 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 	private static final float INTERVAL_DAYS = 1f; // 改为7f就是每周一次
 	private static final int SUPPLIES_THRESHOLD = 50; // 补给品阈值
-	private static final int SUPPLIES_BATCH = 50; // 每次补给量
-	private static final int FUEL_THRESHOLD = 50; // 燃料阈值
-	private static final int FUEL_BATCH = 50; // 每次补给量
-	private static final float CR_THRESHOLD = 0.5f; // CR阈值，兼顾自动船，0.5比较好
+	private static final int SUPPLIES_BATCH = 20; // 每次补给量是舰队规模的几倍。一般填20不会爆仓
+	private static final int FUEL_THRESHOLD = 10; // 燃料阈值
+	private static final int FUEL_BATCH = 10; // 每次补给量是舰队规模的几倍。一般不要超过25，不然小船容易爆仓。
+	private static final float CR_THRESHOLD = 0.4f; // CR阈值，兼顾自动船+核心后的CR 42%
 	private static final float CR_RECOVERY_AMOUNT = 0.5f; // 每次恢复CR量（50%）
 
 	private final IntervalUtil tracker = new IntervalUtil(INTERVAL_DAYS, INTERVAL_DAYS);
@@ -71,7 +71,8 @@ public class FleetDailyResupply implements EveryFrameScript {
 		float qty = cargo.getCommodityQuantity(Commodities.SUPPLIES);
 		float space = cargo.getSpaceLeft();
 		if (qty < SUPPLIES_THRESHOLD && space >= SUPPLIES_BATCH) {
-			cargo.addCommodity(Commodities.SUPPLIES, SUPPLIES_BATCH);
+			cargo.addCommodity(Commodities.SUPPLIES,
+					SUPPLIES_BATCH * cargo.getFleetData().getFleet().getFleetSizeCount());
 			Global.getSector().getCampaignUI().addMessage("--广告位招租：时光科技-吃了么送餐快线 800-810-8888", Color.BLUE);
 			Global.getSector().getCampaignUI().addMessage("出门在外，带够干粮哦，免费送您补给一份");
 		}
@@ -86,7 +87,7 @@ public class FleetDailyResupply implements EveryFrameScript {
 		float qty = cargo.getCommodityQuantity(Commodities.FUEL);
 		float space = cargo.getSpaceLeft();
 		if (qty < FUEL_THRESHOLD && space >= FUEL_BATCH) {
-			cargo.addCommodity(Commodities.FUEL, FUEL_BATCH);
+			cargo.addCommodity(Commodities.FUEL, FUEL_BATCH * cargo.getFleetData().getFleet().getFleetSizeCount());
 			Global.getSector().getCampaignUI().addMessage("--广告位招租：时光科技-哒哒送油快线 800-810-8888", Color.RED);
 			Global.getSector().getCampaignUI().addMessage("出门在外，油箱不能空，免费送您燃油一份");
 //			logCargoContents(cargo);
@@ -100,11 +101,22 @@ public class FleetDailyResupply implements EveryFrameScript {
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			RepairTrackerAPI rt = member.getRepairTracker();
 			if (rt != null && rt.getCR() < CR_THRESHOLD) {
+
 				float newCR = Math.min(1f, rt.getCR() + CR_RECOVERY_AMOUNT);
+//======== 测试节============
+				float baseCR, crDecreaseRate = 0f;
+				baseCR = rt.getBaseCR() * 100;
+				crDecreaseRate = rt.getDecreaseRate() * 100;
+
+				Global.getSector().getCampaignUI().addMessage(String.format(
+						"[CR维修测试] current=%.2f, TH=%.2f, new=%.2f, baseCR=%.2f,crDecreaseRate=%.2f, result=%.2f",
+						rt.getCR(), CR_THRESHOLD, newCR, baseCR, crDecreaseRate, crDecreaseRate * baseCR));
+//==============================
 				rt.setCR(newCR);
 				Color gold = new Color(255, 215, 0);
 				Global.getSector().getCampaignUI().addMessage("--广告位招租：时光科技-狗东快修 800-810-8888", gold);
-				Global.getSector().getCampaignUI().addMessage("道路千万条，安全第一条！帮你快速恢复了舰队CR");
+				Global.getSector().getCampaignUI().addMessage("道路千万条，安全第一条！（如果维修频繁，保证舰队无人舰点数不超限）");
+
 			}
 		}
 	}
