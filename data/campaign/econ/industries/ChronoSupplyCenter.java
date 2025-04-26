@@ -424,6 +424,24 @@ public class ChronoSupplyCenter extends BaseIndustry {
 //				    "piranha_wing",                  // 食人鱼轰炸机 – 轰炸机 – 15
 				"perdition_wing", // 毁灭轰炸机 – 轰炸机 – 15
 //				    "terminator_wing",                // 终结者点防无人机 – 点防无人机 – 20
+
+//下面是女武神包的，没有没关系，加不上而已
+				"valk_morgiana_wing", // 魔吉安娜, valk_morgiana, 拦截机
+				"valk_helia_corv_wing", // 海莉亚, valk_helia, 风暴护卫
+				"valk_azgard_wing", // 阿兹卡, valk_azgard, 重型战机
+				"valk_lightning_wing", // 雷击, valk_lightning, 突击战机
+				"valk_firefly_wing", // 萤火虫, valk_firefly, 激光战机
+				"valk_excalibur_corv_wing", // 誓约之剑, valk_excalibur, 战术护卫
+				"valk_sahara_wing", // 撒哈拉, valk_sahara, 轰炸机
+				"valk_ancord_H-bomber_wing", // 蝮蛇之毒, valk_ancord, 重装轰炸机
+
+//Lucks 随地小便的包
+				"rat_supernova_wing", // 超新星, rat_supernova
+				"rat_dawnblade_wing", // 夜刃, rat_dawnblade
+				"rat_nightblade_wing", // 晓刃, rat_nightblade
+				"rat_protostar_wing", // 原恒星, rat_protostar
+
+//最后一行防错，不要注释掉				
 				"wasp_wing" // 黄蜂无人截击机 – 无人截击机 – 5
 		);
 
