@@ -1,0 +1,51 @@
+下面对 weapon.csv 中每一列的含义作简要说明，你可以结合自己的需求做进一步调整：
+列名	含义说明
+name	武器在游戏中显示的名称
+id	武器的内部唯一标识，用于脚本和数据引用
+tier	武器的分级（如 I/II/III），通常用来决定解锁顺序
+rarity	稀有度（common, uncommon, rare 等），决定刷出概率
+base value	基础价格，以信用点计
+range	有效射程上限（游戏单位）
+damage/second	每秒理论输出伤害（DPS）
+damage/shot	单发伤害
+emp	单发 EMP 伤害
+impact	单发冲撞伤害（对舰体/装甲的物理冲击）
+turn rate	炮塔旋转速度（度／秒），针对可旋转炮塔
+OPs	安装该武器所需的“弹药点”（Ordnance Point），衡量舰船挂载容量
+ammo	弹匣容量（一次装填可射击的次数）
+ammo/sec	每秒消耗弹药数量
+reload size	每次补弹时装填的弹药数量
+type	武器类型（如 beam、energy、ballistic、missile 等）
+energy/shot	单次开火消耗能量（针对能量武器）
+energy/second	持续开火时每秒消耗能量
+chargeup	开火前的蓄能/旋转时间（秒）
+chargedown	射击后冷却时间（秒）
+burst size	爆发射击中一次性发射的弹数
+burst delay	爆发射击中各发间隔时间（秒）
+min spread	最小散布角度（度）
+max spread	最大散布角度（度）
+spread/shot	每次射击后散布角度增量
+spread decay/sec	每秒散布角度衰减量
+beam speed	光束展开/收缩速度（仅对光束武器有效）
+proj speed	弹丸飞行速度（游戏单位／秒）
+launch speed	弹道武器初始发射速度（游戏单位／秒）
+flight time	弹丸存活时长（秒），超时自动消失
+proj hitpoints	弹丸耐久（即能承受多少抗击打）
+autofireAccBonus	自动射击时的精度加成
+extraArcForAI	AI 瞄准时允许的额外射击弧度
+hints	开发者/补充提示，用于辅助理解或调试
+tags	自定义标签，可用于过滤、分组
+groupTag	同类武器的分组标识
+tech/manufacturer	技术档次或生产厂家
+for weapon tooltip>>	这是一个分隔标记，后续字段都用于在武器 Tooltip（悬浮提示）中显示
+primaryRoleStr	在 Tooltip 中展示的“主要职责”文字，如“对舰主炮”、“防空”等
+speedStr	在 Tooltip 中展示的速度数值（带单位或标签）
+trackingStr	在 Tooltip 中展示的“追踪能力”文字
+turnRateStr	在 Tooltip 中展示的“转向速度”文字
+accuracyStr	在 Tooltip 中展示的“命中精度”文字
+customPrimary	自定义的主要属性文字（如需要覆盖默认的 primaryRoleStr）
+customPrimaryHL	自定义的主要属性高亮文字
+customAncillary	自定义的辅助属性文字
+customAncillaryHL	自定义的辅助属性高亮文字
+noDPSInTooltip	布尔值，若为 true 则在 Tooltip 中隐藏 DPS 信息
+number	内部序号或排序 ID，通常不用手动调整
