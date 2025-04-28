@@ -132,23 +132,23 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			String blueprintKey = getModId() + "_ChronoSupplyCenter_onetime_given";
 			Map<String, Object> data = Global.getSector().getPersistentData();
 			if (!data.containsKey(blueprintKey)) {
-				giveOneTimeSpecialItems(cargo);
-				giveOneTimeShips(cargo);
-				giveOneTimeFunds();
+//				giveOneTimeSpecialItems(cargo);  //加蓝图和AI核心等特殊物品，出问题概率大，优先注释掉
+//				giveOneTimeShips(cargo);         //加标准版的战舰，出问题概率中低
+				giveOneTimeFunds(); // 加钱，出错概率低
 
 				// 标记一次性发放物品过了
 				data.put(blueprintKey, true);
 				Global.getSector().getCampaignUI().addMessage("你小时候的邻居王叔叔过世了，给你留下的大笔遗产已到账", new Color(255, 215, 0));
-				Global.getSector().getCampaignUI().addMessage("时光科技：发放一次性蓝图包、稀有物和超级战舰奖励");
+//				Global.getSector().getCampaignUI().addMessage("时光科技：发放一次性蓝图包、稀有物和超级战舰奖励");
 			}
 
 			// 保底补给：武器、战机、核心、组件、宠物、喜欢的保留战舰
-			replenishWeapons(cargo);
-			replenishFighters(cargo);
-			replenishCores(cargo);
-			replenishCommodities(cargo);
-			replenishPets(cargo);
-			replenishShips(cargo); // 只有自己常用的常备战舰，不是一次性给的超级战舰
+//			replenishWeapons(cargo);     //加武器
+//			replenishFighters(cargo);    //加战机
+//			replenishCores(cargo);       //加AI核心
+//			replenishCommodities(cargo);   //加工革的三个产出
+//			replenishPets(cargo);         //加工革宠物
+//			replenishShips(cargo); // 补充奥德赛，劾龙伯和新星，三个都是原版战舰，出问题概率小
 
 			// 更新 timestamp
 			memWrite.set(memKey, clock.getTimestamp());
@@ -506,8 +506,8 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			Global.getLogger(getClass()).info("Added PetBox subtype: " + subtype);
 		}
 
-		// 3) （可选）排序一下
-		cargo.sort();
+		// 3) 可能有NPE
+		// cargo.sort();
 	}
 
 	private void addCommodity(CargoAPI cargo, String id, int threshold, int maxAdd) {

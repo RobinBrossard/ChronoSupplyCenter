@@ -49,10 +49,10 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 		CargoAPI cargo = fleet.getCargo();
 
-		checkAndSupplySupplies(cargo);
-		checkAndSupplyFuel(cargo);
-		checkAndRestoreFleetCR(fleet);
-		checkAndGiveFunds();
+		checkAndSupplySupplies(cargo); // 加补给，出错概率小
+		checkAndSupplyFuel(cargo); // 加油，出错概率小
+//		checkAndRestoreFleetCR(fleet);  //维修，魔改船出错概率大
+		checkAndGiveFunds(); // 加钱，出错概率小
 	}
 
 	/** V5 500，我是秦始皇 */
@@ -104,13 +104,13 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 				float newCR = Math.min(1f, rt.getCR() + CR_RECOVERY_AMOUNT);
 //======== 测试节============
-				float baseCR, crDecreaseRate = 0f;
-				baseCR = rt.getBaseCR() * 100;
-				crDecreaseRate = rt.getDecreaseRate() * 100;
-
-				Global.getSector().getCampaignUI().addMessage(String.format(
-						"[CR维修测试] current=%.2f, TH=%.2f, new=%.2f, baseCR=%.2f,crDecreaseRate=%.2f, result=%.2f",
-						rt.getCR(), CR_THRESHOLD, newCR, baseCR, crDecreaseRate, crDecreaseRate * baseCR));
+//				float baseCR, crDecreaseRate = 0f;
+//				baseCR = rt.getBaseCR() * 100;
+//				crDecreaseRate = rt.getDecreaseRate() * 100;
+//
+//				Global.getSector().getCampaignUI().addMessage(String.format(
+//						"[CR维修测试] current=%.2f, TH=%.2f, new=%.2f, baseCR=%.2f,crDecreaseRate=%.2f, result=%.2f",
+//						rt.getCR(), CR_THRESHOLD, newCR, baseCR, crDecreaseRate, crDecreaseRate * baseCR));
 //==============================
 				rt.setCR(newCR);
 				Color gold = new Color(255, 215, 0);
