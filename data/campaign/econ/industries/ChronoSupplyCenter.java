@@ -507,7 +507,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 		}
 
 		// 3) （可选）排序一下
-		cargo.sort();
+		// cargo.sort();
 	}
 
 	private void addCommodity(CargoAPI cargo, String id, int threshold, int maxAdd) {
