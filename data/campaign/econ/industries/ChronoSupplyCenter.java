@@ -508,6 +508,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 		}
 
 		// 3) 可能有NPE
+
+		// 3) （可选）排序一下
+
 		// cargo.sort();
 	}
 
