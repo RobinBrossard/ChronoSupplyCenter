@@ -51,7 +51,7 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 		checkAndSupplySupplies(cargo); // 加补给，出错概率小
 		checkAndSupplyFuel(cargo); // 加油，出错概率小
-//		checkAndRestoreFleetCR(fleet);  //维修，魔改船出错概率大
+		checkAndRestoreFleetCR(fleet); // 维修，魔改船出错概率大
 		checkAndGiveFunds(); // 加钱，出错概率小
 	}
 
