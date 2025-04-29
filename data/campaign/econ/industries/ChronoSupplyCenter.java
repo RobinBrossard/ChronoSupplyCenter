@@ -239,7 +239,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	private void replenishShips(CargoAPI cargo) {
 		List<String> ships = Arrays.asList("astral", // 星体
 				"hyperion", // 亥伯龙
-				"mynova", // 测试舰
+				"mynova", // 测试舰-需要修改
 				"odyssey" // 奥德赛
 		);
 		for (String h : ships)
