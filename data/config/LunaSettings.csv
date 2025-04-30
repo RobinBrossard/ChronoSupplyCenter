@@ -1,0 +1,42 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+CSC_funcWarrning,配置加强功能是否起效,,,,但和其它MOD有冲突时，尝试关闭几个功能试试,,,建筑功能
+onGiveOneTimeSpecialItems,添加一次性特殊物品,Boolean,true,,第一个时光中心建成后，给与的特殊物品，如蓝图、AI等奖励。有冲突优先关闭。,true,false,建筑功能
+onGiveOneTimeShips,添加一次性战舰,Boolean,true,,第一个时光中心建成后，给与的标准版中终极战舰奖励,true,false,建筑功能
+onGiveOneTimeFunds,添加一次性资金,Boolean,true,,第一个时光中心建成后，给与的千万奖金,true,false,建筑功能
+onReplenishWeapons,补充武器,Boolean,true,,自动补充武器,true,false,建筑功能
+onReplenishFighters,补充战机,Boolean,true,,自动补充战机,true,false,建筑功能
+onReplenishCores,补充AI核心,Boolean,true,,自动补充AI核心，有冲突优先关闭。,true,false,建筑功能
+onReplenishCommodities,补充工革的三个特殊商品,Boolean,true,,自动补充工革的三个特殊商品,true,false,建筑功能
+onReplenishPets,补充宠物,Boolean,true,,自动补充工革的宠物,true,false,建筑功能
+onReplenishShips,补充战舰,Boolean,true,,自动标准版的三艘常用战舰和自用消点舰,true,false,建筑功能
+,,,,,,,,
+CSC_paraWarrning,配置相关功能参数,,,,已经比较变态，建议保持原样，除非你很清楚要什么,,,建筑功能
+basicProductGainIndex,基本产品产出增益倍数,Int,2,,星球基本产品的产出,2,5,建筑功能
+inventoryThresholdSP,特殊物品阈值,Int,2,,当库存中特殊物品低于此值时补充,2,5,建筑功能
+inventoryThreshold,武器阈值,Int,30,,当库存中武器低于此值时补充,10,100,建筑功能
+maxWeaponAdd,最大武器补充量,Int,10,,每次最大补充武器数量,1,100,建筑功能
+fighterInventoryThreshold,战机阈值,Int,30,,当库存中战机低于此值时补充,2,100,建筑功能
+maxFighterAdd,最大战机补充量,Int,10,,每次最大补充战机数量,1,100,建筑功能
+coreThreshold,AI 核心阈值,Int,3,,当 AI 核心低于此值时补充,2,10,建筑功能
+maxCoresAdd,最大 AI 核心补充量,Int,1,,每次最大补充 AI 核心数量,1,5,建筑功能
+relicThreshold,遗物组件阈值,Int,200,,当遗物组件低于此值时补充,200,1000,建筑功能
+maxRelicAdd,最大遗物组件补充量,Int,100,,每次最大补充遗物组件数量,100,500,建筑功能
+shipPartsThreshold,舰船零件阈值,Int,200,,当舰船零件低于此值时补充,200,1000,建筑功能
+maxShipPartsAdd,最大舰船零件补充量,Int,100,,每次最大补充舰船零件数量,100,500,建筑功能
+petfoodThreshold,宠物食品阈值,Int,20,,当宠物食品低于此值时补充,10,100,建筑功能
+maxPetfoodAdd,最大宠物食品补充量,Int,10,,每次最大补充宠物食品数量,10,50,建筑功能
+petThreshold,宠物库存阈值,Int,1,,当宠物数低于此值时补充,2,10,建筑功能
+maxPetAdd,最大宠物补充量,Int,1,,每次最大补充宠物数量,1,5,建筑功能
+,,,,,,,,
+intervalDays,检查间隔（天）,int,1,,每隔多少天执行一次补给检查,1,30,舰队自动补给
+onCheckAndSupplySupplies,检查并补给补给品,Boolean,true,,当补给品低于阈值时自动补给,true,false,舰队自动补给
+suppliesThreshold,补给品阈值,Int,50,,当补给品低于此数量时触发补给,0,500,舰队自动补给
+suppliesBatch,补给批量倍数,Int,20,,每次补给量 = 舰队规模 × 此倍数,1,100,舰队自动补给
+onCheckAndSupplyFuel,检查并补给燃料,Boolean,true,,当燃料低于阈值时自动补给,true,false,舰队自动补给
+fuelThreshold,燃料阈值,Int,10,,当燃料低于此数量时触发补给,0,100,舰队自动补给
+fuelBatch,燃料批量倍数,Int,10,,每次补给燃料 = 舰队规模 × 此倍数,1,100,舰队自动补给
+onCheckAndRestoreFleetCR,检查并恢复舰队CR,Boolean,true,,当舰队CR低于阈值时自动恢复,true,false,舰队自动补给
+crThreshold,CR 阈值,Double,0.4,,当舰队 CR 低于此比例时触发恢复,0.0,1.0,舰队自动补给
+crRecoveryAmount,CR 恢复量,Double,0.5,,每次恢复 CR 的比例,0.0,1.0,舰队自动补给
+onCheckAndGiveFunds,检查并补给资金,Boolean,true,,当资金不足时自动补充,true,false,舰队自动补给
+,,,,,,,,

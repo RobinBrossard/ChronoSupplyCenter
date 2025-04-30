@@ -169,6 +169,7 @@
     "hullId": "mynova",
     "hullName": "Nova",
     "hullSize": "CAPITAL_SHIP",
+	"deploymentPoints": 35,
     "shieldCenter": [
         9,
         0

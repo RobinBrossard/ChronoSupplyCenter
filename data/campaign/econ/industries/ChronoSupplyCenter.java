@@ -23,27 +23,95 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 
+import lunalib.lunaSettings.LunaSettings;
+
 public class ChronoSupplyCenter extends BaseIndustry {
 
 	private static final int DAYS_PER_CHECK = 1;
 	private static final String MEM_KEY_SUFFIX = "_lastDay";
 
-	// ====== 用户可调：各类库存阈值 ======
-	private static final int INVENTORY_THRESHOLD_SP = 2; // special items 阈值
-	private static final int INVENTORY_THRESHOLD = 30; // 武器阈值
-	private static final int MAX_WEAPON_ADD = 10;
-	private static final int FIGHTER_INVENTORY_THRESH = 30; // 战机阈值
-	private static final int MAX_FIGHTER_ADD = 10;
-	private static final int CORE_THRESHOLD = 3; // AI 核心阈值
-	private static final int MAX_CORES_ADD = 1;
-	private static final int RELIC_THRESHOLD = 200; // 遗物组件阈值
-	private static final int MAX_RELIC_ADD = 100;
-	private static final int SHIP_PARTS_THRESHOLD = 200; // 舰船零件阈值
-	private static final int MAX_SHIP_PARTS_ADD = 100;
-	private static final int PETFOOD_THRESHOLD = 20; // 宠物食品阈值
-	private static final int MAX_PETFOOD_ADD = 10;
-	private static final int PET_THRESHOLD = 1; // 宠物库存阈值
-	private static final int MAX_PET_ADD = 1;
+	private static final String MOD_ID = "ChronoSupplyCenter";
+
+	// ====== 把原来的 static final 常量都改成 static 变量 ======
+	private static int BASIC_PRODUCT_GAIN_INDEX;
+	private static int INVENTORY_THRESHOLD_SP;
+	private static int INVENTORY_THRESHOLD;
+	private static int MAX_WEAPON_ADD;
+	private static int FIGHTER_INVENTORY_THRESH;
+	private static int MAX_FIGHTER_ADD;
+	private static int CORE_THRESHOLD;
+	private static int MAX_CORES_ADD;
+	private static int RELIC_THRESHOLD;
+	private static int MAX_RELIC_ADD;
+	private static int SHIP_PARTS_THRESHOLD;
+	private static int MAX_SHIP_PARTS_ADD;
+	private static int PETFOOD_THRESHOLD;
+	private static int MAX_PETFOOD_ADD;
+	private static int PET_THRESHOLD;
+	private static int MAX_PET_ADD;
+
+	// 功能函数标记
+	private static boolean onGiveOneTimeSpecialItems = true;
+	private static boolean onGiveOneTimeShips = true;
+	private static boolean onGiveOneTimeFunds = true;
+	private static boolean onReplenishWeapons = true;
+	private static boolean onReplenishFighters = true;
+	private static boolean onReplenishCores = true;
+	private static boolean onReplenishCommodities = true;
+	private static boolean onReplenishPets = true;
+	private static boolean onReplenishShips = true;
+
+	// ====== 在静态块里或 init 方法里读取设置 ======
+	static {
+		// 如果玩家没装 LunaLib，也要保留原来的默认值
+		if (Global.getSettings().getModManager().isModEnabled("lunalib")) {
+			BASIC_PRODUCT_GAIN_INDEX = LunaSettings.getInt(MOD_ID, "basicProductGainIndex");
+			INVENTORY_THRESHOLD_SP = LunaSettings.getInt(MOD_ID, "inventoryThresholdSP");
+			INVENTORY_THRESHOLD = LunaSettings.getInt(MOD_ID, "inventoryThreshold");
+			MAX_WEAPON_ADD = LunaSettings.getInt(MOD_ID, "maxWeaponAdd");
+			FIGHTER_INVENTORY_THRESH = LunaSettings.getInt(MOD_ID, "fighterInventoryThreshold");
+			MAX_FIGHTER_ADD = LunaSettings.getInt(MOD_ID, "maxFighterAdd");
+			CORE_THRESHOLD = LunaSettings.getInt(MOD_ID, "coreThreshold");
+			MAX_CORES_ADD = LunaSettings.getInt(MOD_ID, "maxCoresAdd");
+			RELIC_THRESHOLD = LunaSettings.getInt(MOD_ID, "relicThreshold");
+			MAX_RELIC_ADD = LunaSettings.getInt(MOD_ID, "maxRelicAdd");
+			SHIP_PARTS_THRESHOLD = LunaSettings.getInt(MOD_ID, "shipPartsThreshold");
+			MAX_SHIP_PARTS_ADD = LunaSettings.getInt(MOD_ID, "maxShipPartsAdd");
+			PETFOOD_THRESHOLD = LunaSettings.getInt(MOD_ID, "petfoodThreshold");
+			MAX_PETFOOD_ADD = LunaSettings.getInt(MOD_ID, "maxPetfoodAdd");
+			PET_THRESHOLD = LunaSettings.getInt(MOD_ID, "petThreshold");
+			MAX_PET_ADD = LunaSettings.getInt(MOD_ID, "maxPetAdd");
+
+			onGiveOneTimeSpecialItems = LunaSettings.getBoolean(MOD_ID, "onGiveOneTimeSpecialItems");
+			onGiveOneTimeShips = LunaSettings.getBoolean(MOD_ID, "onGiveOneTimeShips");
+			onGiveOneTimeFunds = LunaSettings.getBoolean(MOD_ID, "onGiveOneTimeFunds");
+			onReplenishWeapons = LunaSettings.getBoolean(MOD_ID, "onReplenishWeapons");
+			onReplenishFighters = LunaSettings.getBoolean(MOD_ID, "onReplenishFighters");
+			onReplenishCores = LunaSettings.getBoolean(MOD_ID, "onReplenishCores");
+			onReplenishCommodities = LunaSettings.getBoolean(MOD_ID, "onReplenishCommodities");
+			onReplenishPets = LunaSettings.getBoolean(MOD_ID, "onReplenishPets");
+			onReplenishShips = LunaSettings.getBoolean(MOD_ID, "onReplenishShips");
+
+		} else {
+			// 这里可以重复原来写的默认值，也可以不写（如果 defaultValue 本身就是和旧默认一致）
+			BASIC_PRODUCT_GAIN_INDEX = 2;
+			INVENTORY_THRESHOLD_SP = 2;
+			INVENTORY_THRESHOLD = 30;
+			MAX_WEAPON_ADD = 10;
+			FIGHTER_INVENTORY_THRESH = 30;
+			MAX_FIGHTER_ADD = 10;
+			CORE_THRESHOLD = 3;
+			MAX_CORES_ADD = 1;
+			RELIC_THRESHOLD = 200;
+			MAX_RELIC_ADD = 100;
+			SHIP_PARTS_THRESHOLD = 200;
+			MAX_SHIP_PARTS_ADD = 100;
+			PETFOOD_THRESHOLD = 20;
+			MAX_PETFOOD_ADD = 10;
+			PET_THRESHOLD = 1;
+			MAX_PET_ADD = 1;
+		}
+	}
 
 	@Override
 	public void apply() {
@@ -62,7 +130,7 @@ public class ChronoSupplyCenter extends BaseIndustry {
 		}
 
 		// 1. 基础商品供应，基于市场等级 ×2
-		int size = market.getSize() * 2;
+		int size = market.getSize() * BASIC_PRODUCT_GAIN_INDEX;
 		supply(Commodities.SUPPLIES, size);
 		supply(Commodities.FUEL, size);
 		supply(Commodities.CREW, size);
@@ -76,8 +144,8 @@ public class ChronoSupplyCenter extends BaseIndustry {
 		supply(Commodities.RARE_METALS, size);
 		supply(Commodities.HEAVY_MACHINERY, size);
 		supply(Commodities.DOMESTIC_GOODS, size);
-		supply(Commodities.ORGANS, market.getSize());
-		supply(Commodities.DRUGS, market.getSize());
+		supply(Commodities.ORGANS, size);
+		supply(Commodities.DRUGS, size);
 		supply(Commodities.HAND_WEAPONS, size);
 		supply(Commodities.LUXURY_GOODS, size);
 		supply(Commodities.LOBSTER, size);
@@ -160,6 +228,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	// ==================== 私有方法 ====================
 
 	private void giveOneTimeSpecialItems(CargoAPI cargo) {
+		if (!onGiveOneTimeSpecialItems) {
+			return;
+		}
 		List<SpecialConfig> specials = Arrays.asList(
 		// ====== industry-slotted items ======
 //			    new SpecialConfig("special", "corrupted_nanoforge",      1, 1f), // 受损的纳米锻炉
@@ -202,6 +273,10 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void giveOneTimeShips(CargoAPI cargo) {
+		if (!onGiveOneTimeShips) {
+			return;
+		}
+
 		List<String> ships = Arrays.asList(
 //======= 下面这几个是  舰船/武器拓展 [Ship/Weapon Pack] MOD 的新增船。不过这个MOD优化可能有问题，卡机器
 //						"swp_boss_doom", // 路西法
@@ -237,6 +312,11 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishShips(CargoAPI cargo) {
+
+		if (!onReplenishShips) {
+			return;
+		}
+
 		List<String> ships = Arrays.asList("astral", // 星体
 				"hyperion", // 亥伯龙
 				"mynova", // 测试舰-需要修改
@@ -247,12 +327,18 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void giveOneTimeFunds() {
+		if (!onGiveOneTimeFunds) {
+			return;
+		}
 		Global.getSector().getPlayerFleet().getCargo().getCredits().add(10000000f);
 //		Color goldColor = new Color(255, 215, 0);
 //		Global.getSector().getCampaignUI().addMessage("时光科技：已向玩家账户添加资金 1000 万", goldColor);
 	}
 
 	private void replenishWeapons(CargoAPI cargo) {
+		if (!onReplenishWeapons) {
+			return;
+		}
 		List<String> weaponIds = Arrays.asList("pilum", // Pilum 短矛 LRM 发射器
 				"pilum_large", // Pilum Large 短矛 LRM 投射舱
 //				    "harpoon",             // Harpoon 鱼叉 MRM
@@ -395,6 +481,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishFighters(CargoAPI cargo) {
+		if (!onReplenishFighters) {
+			return;
+		}
 		List<String> fighterIds = Arrays.asList("broadsword_wing", // 宽剑战机 – 重型战斗机 – 10
 //				    "warthog_wing",                  // 野猪战机 – 重型战斗机 – 10
 //				    "thunder_wing",                  // 雷霆截击机 – 重型截击机 – 15
@@ -454,6 +543,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishCores(CargoAPI cargo) {
+		if (!onReplenishCores) {
+			return;
+		}
 		for (String coreId : Arrays.asList(Commodities.ALPHA_CORE, Commodities.BETA_CORE, Commodities.GAMMA_CORE)) {
 			int cur = (int) cargo.getCommodityQuantity(coreId);
 			if (cur < CORE_THRESHOLD)
@@ -462,6 +554,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishCommodities(CargoAPI cargo) {
+		if (!onReplenishCommodities) {
+			return;
+		}
 		// 工革包的新增物品研究所和宠物需要
 		addCommodity(cargo, "IndEvo_rare_parts", RELIC_THRESHOLD, MAX_RELIC_ADD);
 		addCommodity(cargo, "IndEvo_parts", SHIP_PARTS_THRESHOLD, MAX_SHIP_PARTS_ADD);
@@ -469,6 +564,9 @@ public class ChronoSupplyCenter extends BaseIndustry {
 	}
 
 	private void replenishPets(CargoAPI cargo) {
+		if (!onReplenishPets) {
+			return;
+		}
 		// 要有工革的包
 		List<String> allSubtypes = Arrays.asList("captain", // 前海盗舰长
 				"mechiders", // 工程蜘

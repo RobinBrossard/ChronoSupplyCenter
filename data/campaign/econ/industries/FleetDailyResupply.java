@@ -15,15 +15,40 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 
-public class FleetDailyResupply implements EveryFrameScript {
+import lunalib.lunaSettings.LunaSettings;
 
-	private static final float INTERVAL_DAYS = 1f; // 改为7f就是每周一次
-	private static final int SUPPLIES_THRESHOLD = 50; // 补给品阈值
-	private static final int SUPPLIES_BATCH = 20; // 每次补给量是舰队规模的几倍。一般填20不会爆仓
-	private static final int FUEL_THRESHOLD = 10; // 燃料阈值
-	private static final int FUEL_BATCH = 10; // 每次补给量是舰队规模的几倍。一般不要超过25，不然小船容易爆仓。
-	private static final float CR_THRESHOLD = 0.4f; // CR阈值，兼顾自动船+核心后的CR 42%
-	private static final float CR_RECOVERY_AMOUNT = 0.5f; // 每次恢复CR量（50%）
+public class FleetDailyResupply implements EveryFrameScript {
+	private static final String MOD_ID = "ChronoSupplyCenter";
+
+	// ====== 可配置参数（原先的 static final 改为普通 static） ======
+	private static int INTERVAL_DAYS; // 检查间隔（天）
+	private static int SUPPLIES_THRESHOLD; // 补给品阈值
+	private static int SUPPLIES_BATCH; // 补给批量倍数
+	private static int FUEL_THRESHOLD; // 燃料阈值
+	private static int FUEL_BATCH; // 燃料批量倍数
+	private static float CR_THRESHOLD; // CR 阈值
+	private static float CR_RECOVERY_AMOUNT; // CR 恢复量
+
+	private static boolean ONcheckAndSupplySupplies = true;
+	private static boolean ONcheckAndSupplyFuel = true;
+	private static boolean ONcheckAndRestoreFleetCR = true;
+	private static boolean ONcheckAndGiveFunds = true;
+
+	static {
+		boolean hasLuna = Global.getSettings().getModManager().isModEnabled("lunalib");
+
+		INTERVAL_DAYS = hasLuna ? LunaSettings.getInt(MOD_ID, "intervalDays") : 1;
+		SUPPLIES_THRESHOLD = hasLuna ? LunaSettings.getInt(MOD_ID, "suppliesThreshold") : 50;
+		SUPPLIES_BATCH = hasLuna ? LunaSettings.getInt(MOD_ID, "suppliesBatch") : 20;
+		FUEL_THRESHOLD = hasLuna ? LunaSettings.getInt(MOD_ID, "fuelThreshold") : 10;
+		FUEL_BATCH = hasLuna ? LunaSettings.getInt(MOD_ID, "fuelBatch") : 10;
+		CR_THRESHOLD = hasLuna ? LunaSettings.getDouble(MOD_ID, "crThreshold").floatValue() : 0.4f;
+		CR_RECOVERY_AMOUNT = hasLuna ? LunaSettings.getDouble(MOD_ID, "crRecoveryAmount").floatValue() : 0.5f;
+		ONcheckAndSupplySupplies = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndSupplySupplies") : true;
+		ONcheckAndSupplyFuel = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndSupplyFuel") : true;
+		ONcheckAndRestoreFleetCR = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndRestoreFleetCR") : true;
+		ONcheckAndGiveFunds = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndGiveFunds") : true;
+	}
 
 	private final IntervalUtil tracker = new IntervalUtil(INTERVAL_DAYS, INTERVAL_DAYS);
 
@@ -57,6 +82,9 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 	/** V5 500，我是秦始皇 */
 	private void checkAndGiveFunds() {
+		if (!ONcheckAndGiveFunds) {
+			return;
+		}
 		float money = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
 		if (money < 1000000f) {
 			Global.getSector().getPlayerFleet().getCargo().getCredits().add(10000000f);
@@ -68,6 +96,9 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 	/** 检查并补给补给品 */
 	private void checkAndSupplySupplies(CargoAPI cargo) {
+		if (!ONcheckAndSupplySupplies) {
+			return;
+		}
 		float qty = cargo.getCommodityQuantity(Commodities.SUPPLIES);
 		float space = cargo.getSpaceLeft();
 		if (qty < SUPPLIES_THRESHOLD && space >= SUPPLIES_BATCH) {
@@ -84,6 +115,9 @@ public class FleetDailyResupply implements EveryFrameScript {
 	 * @return 如果进行了补给则返回 true，否则 false
 	 */
 	private void checkAndSupplyFuel(CargoAPI cargo) {
+		if (!ONcheckAndSupplyFuel) {
+			return;
+		}
 		float qty = cargo.getCommodityQuantity(Commodities.FUEL);
 		float space = cargo.getSpaceLeft();
 		if (qty < FUEL_THRESHOLD && space >= FUEL_BATCH) {
@@ -98,6 +132,9 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 	/** 检查并恢复舰队战备值（CR） */
 	private void checkAndRestoreFleetCR(CampaignFleetAPI fleet) {
+		if (!ONcheckAndRestoreFleetCR) {
+			return;
+		}
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
 			RepairTrackerAPI rt = member.getRepairTracker();
 			if (rt != null && rt.getCR() < CR_THRESHOLD) {

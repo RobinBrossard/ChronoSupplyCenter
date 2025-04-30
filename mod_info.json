@@ -1,14 +1,23 @@
 {
   "id": "ChronoSupplyCenter",
   "name": "时光科技MOD",
-	"author": "Robin",
-	"version":"0.6",
-	"description":"来自2025年的穿越科技。详见readme",
-	
-	"dependencies": [
-    {"id": "IndEvo", "name": "工业革命"}
+  "author": "Robin",
+  "version": "0.6",
+  "description": "来自2025年的穿越科技。详见readme",
+  "dependencies": [
+    {
+      "id": "IndEvo",
+      "name": "工业革命"
+    },
+    {
+      "id": "lw_lazylib",
+      "name": "LazyLib"
+    },
+    {
+      "id": "lunalib",
+      "name": "LunaLib"
+    }
   ],
-  "gameVersion": "0.97a-RC11",
-
-  "modPlugin": "data.campaign.econ.industries.ChronoSupplyPlugin",
+  "gameVersion": "0.97",
+  "modPlugin": "data.campaign.econ.industries.ChronoSupplyPlugin"
 }
