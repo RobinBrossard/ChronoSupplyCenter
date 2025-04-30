@@ -4,6 +4,7 @@
   "author": "Robin",
   "version": "0.7",
   "description": "来自2025年的穿越科技。详见readme",
+  "logoPath": "icon.png",
   "dependencies": [
     {
       "id": "IndEvo",
