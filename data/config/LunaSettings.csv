@@ -41,11 +41,23 @@ crThreshold,CR 阈值,Double,0.4,,当舰队 CR 低于此比例时触发恢复,0.
 crRecoveryAmount,CR 恢复量,Double,0.5,,每次恢复 CR 的比例,0.0,1.0,舰队自动补给
 onCheckAndGiveFunds,检查并补给资金,Boolean,true,,当资金不足时自动补充,true,false,舰队自动补给
 ,,,,,,,,
-CSC_hullmodsWarrning,无人舰调整船插,Header,无人舰调整船插,,无人舰操作点数影响复杂，这里硬性将其修改为指定数字，一般是0，省事。也可以随便设置一个小数字。,,,无人舰调整船插
-supplyRecoveryBase,补给恢复基础量,Double,0,,无人舰操作点数影响属性复杂，所以这里设置硬性将其设为多少点，一般是0，省事。也可以随便设置一个小数字。,0,100,无人舰调整船插
-crewSpaceBonus,额外船员空间,Int,500,,该船插附带可以增加多少船员空间，无人舰不起作用，有人舰可以生效,0,2000,无人舰调整船插
-cargoSpaceBonus,额外货舱空间,Int,1000,,该船插附带可以增加多少货舱空间,0,5000,无人舰调整船插
-fuelSpaceBonus,额外燃油空间,Int,1000,,该船插附带可以增加多少燃油容量,0,5000,无人舰调整船插
+CSC_hullmodsWarrning,基本配置,Header,基本配置,,给舰船增益，主要有无人舰点数消除/货舱/油舱/船员舱大小，探测距离，攻击距离等,,,增益船插
+supplyRecoveryBase,补给恢复基础量,Double,0,,无人舰操作点数影响属性复杂，所以这里设置硬性将其设为多少点，一般是0，省事。也可以随便设置一个小数字。,0,100,增益船插
+crewSpaceBonus,额外船员空间,Int,500,,该船插附带可以增加多少船员空间，无人舰不起作用，有人舰可以生效,0,2000,增益船插
+cargoSpaceBonus,额外货舱空间,Int,1000,,该船插附带可以增加多少货舱空间,0,10000,增益船插
+fuelSpaceBonus,额外燃油空间,Int,1000,,该船插附带可以增加多少燃油容量,0,10000,增益船插
+speedBonus,额外最大速度,Double,50,,增加多少最大移动速度 (单位：su/s),0,200,增益船插
+maneuverBonus,额外机动度,Double,100,,增加多少最大转向速率 (单位：°/s),0,360,增益船插
+sensorRangeBonus,额外探测范围,Double,1000,,增加多少探测距离 (单位：su),0,5000,增益船插
+detectionRangeReduction,减少被探测范围,Double,1000,,减少多少被敌方探测距离 (单位：su),0,5000,增益船插
+maxBurnLevel,额外最大宇宙速度,Double,10,,增加多少最大宇宙速度,0,30,增益船插
+CSC_hullmodsWarrning1,警告，以下增益过于强力，谨慎使用。建议都设为0，保持游戏原设定。,Header,警告，以下增益过于强力，谨慎使用。建议都设为0，保持游戏原设定。,,警告，以下增益过于强力，谨慎使用。建议都设为0，保持游戏原设定。,,,增益船插
+hullBonus,额外船体结构,Int,10000,,增加多少船体结构值 (HP),0,50000,增益船插
+weaponRangeBonus,武器射程加成,Double,200,,百分比形式提升武器射程(能量和实弹）,0,1000,增益船插
+missileRangeBonus,导弹射程加成,Double,200,,百分比形式提升导弹射程,0,1000,增益船插
+fluxCapacityBonus,额外辐能容量,Double,10000,,增加多少最大辐能容量,0,50000,增益船插
+fluxDissipationBonus,额外辐能耗散速度,Double,10000,,增加多少辐能耗散速度 (单位：flux/s),0,50000,增益船插
+sightRadiusBonus,额外战斗视野半径,Int,0,,增加多少战斗视野半径 (单位：su),0,5000,增益船插
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
