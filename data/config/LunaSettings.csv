@@ -40,6 +40,8 @@ onCheckAndRestoreFleetCR,检查并恢复舰队CR,Boolean,true,,当舰队CR低于
 crThreshold,CR 阈值,Double,0.4,,当舰队 CR 低于此比例时触发恢复,0.0,1.0,舰队自动补给
 crRecoveryAmount,CR 恢复量,Double,0.5,,每次恢复 CR 的比例,0.0,1.0,舰队自动补给
 onCheckAndGiveFunds,检查并补给资金,Boolean,true,,当资金不足时自动补充,true,false,舰队自动补给
+maxCreditsThreshold,防溢出资金上限,Double,100000000,,默认一亿上限，超过会扣掉一部分（扣减比例下面设置）。最大不要设置超过21亿。,100000000,1000000000,舰队自动补给
+maxCreditsReset,扣减比例,Double,0.2,,资金若超过上限，扣减资金比例。,0.1,0.9,舰队自动补给
 ,,,,,,,,
 CSC_hullmodsWarrning,基本配置,Header,基本配置,,给舰船增益，主要有无人舰点数消除/货舱/油舱/船员舱大小，探测距离，攻击距离等,,,增益船插
 supplyRecoveryBase,补给恢复基础量,Double,0,,无人舰操作点数影响属性复杂，所以这里设置硬性将其设为多少点，一般是0，省事。也可以随便设置一个小数字。,0,100,增益船插

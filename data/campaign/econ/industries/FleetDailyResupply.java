@@ -34,6 +34,10 @@ public class FleetDailyResupply implements EveryFrameScript {
 	private static boolean ONcheckAndRestoreFleetCR = true;
 	private static boolean ONcheckAndGiveFunds = true;
 
+	// 新增：金币阈值与重置值
+	private static float MAX_CREDITS_THRESHOLD;
+	private static float MAX_CREDITS_RESET;
+
 	static {
 		boolean hasLuna = Global.getSettings().getModManager().isModEnabled("lunalib");
 
@@ -48,6 +52,11 @@ public class FleetDailyResupply implements EveryFrameScript {
 		ONcheckAndSupplyFuel = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndSupplyFuel") : true;
 		ONcheckAndRestoreFleetCR = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndRestoreFleetCR") : true;
 		ONcheckAndGiveFunds = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndGiveFunds") : true;
+
+		// 读取新参数：金币上限与重置值
+		MAX_CREDITS_THRESHOLD = hasLuna ? LunaSettings.getDouble(MOD_ID, "maxCreditsThreshold").floatValue()
+				: 100_000_000f; // 默认 1 亿
+		MAX_CREDITS_RESET = hasLuna ? LunaSettings.getDouble(MOD_ID, "maxCreditsReset").floatValue() : 0.2f; // 默认扣除20%
 	}
 
 	private final IntervalUtil tracker = new IntervalUtil(INTERVAL_DAYS, INTERVAL_DAYS);
@@ -82,16 +91,27 @@ public class FleetDailyResupply implements EveryFrameScript {
 
 	/** V5 500，我是秦始皇 */
 	private void checkAndGiveFunds() {
-		if (!ONcheckAndGiveFunds) {
+
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		float money = cargo.getCredits().get();
+
+		// —— 新增：金币过高时自动扣减 ——
+		if (money > MAX_CREDITS_THRESHOLD) {
+			float excess = money * MAX_CREDITS_RESET;
+			cargo.getCredits().subtract(excess);
+			String formatted = String.format("C$ %,.0f", excess);
+			Global.getSector().getCampaignUI().addMessage(String.format("资金过多，自动扣缴星际税 %s", formatted), Color.YELLOW);
+			// 不继续发放额外资金
 			return;
 		}
-		float money = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
-		if (money < 1000000f) {
-			Global.getSector().getPlayerFleet().getCargo().getCredits().add(10000000f);
-			Color goldColor = new Color(255, 215, 0);
-			Global.getSector().getCampaignUI().addMessage("你又一笔遗产到账，略解燃眉之急", goldColor);
-		}
 
+		// 原有：金币不足 1M 时发放 10M 资金
+		if (!ONcheckAndGiveFunds)
+			return;
+		if (money < 1_000_000f) {
+			cargo.getCredits().add(10_000_000f);
+			Global.getSector().getCampaignUI().addMessage("你又一笔遗产到账，略解燃眉之急", new Color(255, 215, 0));
+		}
 	}
 
 	/** 检查并补给补给品 */
