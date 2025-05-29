@@ -11,7 +11,7 @@ onReplenishPets,补充宠物,Boolean,true,,自动补充工革的宠物,true,fals
 onReplenishShips,补充战舰,Boolean,true,,自动标准版的三艘常用战舰和自用消点舰,true,false,建筑功能
 ,,,,,,,,
 CSC_paraWarrning,配置相关功能参数,Header,配置相关功能参数,,已经比较变态，建议保持原样，除非你很清楚要什么,,,建筑功能
-basicProductGainIndex,基本产品产出增益倍数,Int,2,,星球基本产品的产出,2,5,建筑功能
+basicProductGainIndex,基本产品产出增益倍数,Int,2,,星球基本产品的产出,1,5,建筑功能
 inventoryThresholdSP,特殊物品阈值,Int,2,,当库存中特殊物品低于此值时补充,2,5,建筑功能
 inventoryThreshold,武器阈值,Int,30,,当库存中武器低于此值时补充,10,100,建筑功能
 maxWeaponAdd,最大武器补充量,Int,10,,每次最大补充武器数量,1,100,建筑功能
@@ -40,6 +40,7 @@ onCheckAndRestoreFleetCR,检查并恢复舰队CR,Boolean,true,,当舰队CR低于
 crThreshold,CR 阈值,Double,0.4,,当舰队 CR 低于此比例时触发恢复,0.0,1.0,舰队自动补给
 crRecoveryAmount,CR 恢复量,Double,0.5,,每次恢复 CR 的比例,0.0,1.0,舰队自动补给
 onCheckAndGiveFunds,检查并补给资金,Boolean,true,,当资金不足时自动补充,true,false,舰队自动补给
+onCreditsReset,防溢出资金开关,Boolean,false,,是否需要0.97抗资金溢出，默认关闭，0.97版本如果资金过多，可以打开一下，降低资金后再关闭。0.98不要用，有冲突。,true,false,舰队自动补给
 maxCreditsThreshold,防溢出资金上限,Double,100000000,,默认一亿上限，超过会扣掉一部分（扣减比例下面设置）。最大不要设置超过21亿。,100000000,1000000000,舰队自动补给
 maxCreditsReset,扣减比例,Double,0.2,,资金若超过上限，扣减资金比例。,0.1,0.9,舰队自动补给
 ,,,,,,,,

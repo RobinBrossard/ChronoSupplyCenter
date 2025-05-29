@@ -537,7 +537,10 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			} catch (Exception ignore) {
 			}
 			if (cur < FIGHTER_INVENTORY_THRESH) {
-				cargo.addFighters(id, Math.min(MAX_FIGHTER_ADD, FIGHTER_INVENTORY_THRESH - cur));
+				try {
+					cargo.addFighters(id, Math.min(MAX_FIGHTER_ADD, FIGHTER_INVENTORY_THRESH - cur));
+				} catch (Exception ignore) {
+				}
 			}
 		}
 	}
@@ -549,7 +552,10 @@ public class ChronoSupplyCenter extends BaseIndustry {
 		for (String coreId : Arrays.asList(Commodities.ALPHA_CORE, Commodities.BETA_CORE, Commodities.GAMMA_CORE)) {
 			int cur = (int) cargo.getCommodityQuantity(coreId);
 			if (cur < CORE_THRESHOLD)
-				cargo.addCommodity(coreId, Math.min(MAX_CORES_ADD, CORE_THRESHOLD - cur));
+				try {
+					cargo.addCommodity(coreId, Math.min(MAX_CORES_ADD, CORE_THRESHOLD - cur));
+				} catch (Exception ignore) {
+				}
 		}
 	}
 
@@ -558,9 +564,12 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			return;
 		}
 		// 工革包的新增物品研究所和宠物需要
-		addCommodity(cargo, "IndEvo_rare_parts", RELIC_THRESHOLD, MAX_RELIC_ADD);
-		addCommodity(cargo, "IndEvo_parts", SHIP_PARTS_THRESHOLD, MAX_SHIP_PARTS_ADD);
-		addCommodity(cargo, "IndEvo_pet_food", PETFOOD_THRESHOLD, MAX_PETFOOD_ADD);
+		try {
+			addCommodity(cargo, "IndEvo_rare_parts", RELIC_THRESHOLD, MAX_RELIC_ADD);
+			addCommodity(cargo, "IndEvo_parts", SHIP_PARTS_THRESHOLD, MAX_SHIP_PARTS_ADD);
+			addCommodity(cargo, "IndEvo_pet_food", PETFOOD_THRESHOLD, MAX_PETFOOD_ADD);
+		} catch (Exception ignore) {
+		}
 	}
 
 	private void replenishPets(CargoAPI cargo) {
@@ -600,16 +609,13 @@ public class ChronoSupplyCenter extends BaseIndustry {
 				continue;
 			}
 			// 新增一个缺失的冷冻舱
-			SpecialItemData box = new SpecialItemData("IndEvo_PetBox", subtype);
-			cargo.addSpecial(box, 1);
-			Global.getLogger(getClass()).info("Added PetBox subtype: " + subtype);
+			try {
+				SpecialItemData box = new SpecialItemData("IndEvo_PetBox", subtype);
+				cargo.addSpecial(box, 1);
+				Global.getLogger(getClass()).info("Added PetBox subtype: " + subtype);
+			} catch (Exception ignore) {
+			}
 		}
-
-		// 3) 可能有NPE
-
-		// 3) （可选）排序一下
-
-		// cargo.sort();
 	}
 
 	private void addCommodity(CargoAPI cargo, String id, int threshold, int maxAdd) {
@@ -618,7 +624,10 @@ public class ChronoSupplyCenter extends BaseIndustry {
 			return;
 		int cur = (int) cargo.getCommodityQuantity(id);
 		if (cur < threshold)
-			cargo.addCommodity(id, Math.min(maxAdd, threshold - cur));
+			try {
+				cargo.addCommodity(id, Math.min(maxAdd, threshold - cur));
+			} catch (Exception ignore) {
+			}
 	}
 
 	private void addShipsToStorage(String hullId, int amount) {

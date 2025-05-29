@@ -33,6 +33,7 @@ public class FleetDailyResupply implements EveryFrameScript {
 	private static boolean ONcheckAndSupplyFuel = true;
 	private static boolean ONcheckAndRestoreFleetCR = true;
 	private static boolean ONcheckAndGiveFunds = true;
+	private static boolean ONCreditsReset = false;
 
 	// 新增：金币阈值与重置值
 	private static float MAX_CREDITS_THRESHOLD;
@@ -52,6 +53,7 @@ public class FleetDailyResupply implements EveryFrameScript {
 		ONcheckAndSupplyFuel = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndSupplyFuel") : true;
 		ONcheckAndRestoreFleetCR = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndRestoreFleetCR") : true;
 		ONcheckAndGiveFunds = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCheckAndGiveFunds") : true;
+		ONCreditsReset = hasLuna ? LunaSettings.getBoolean(MOD_ID, "onCreditsReset") : false;
 
 		// 读取新参数：金币上限与重置值
 		MAX_CREDITS_THRESHOLD = hasLuna ? LunaSettings.getDouble(MOD_ID, "maxCreditsThreshold").floatValue()
@@ -96,7 +98,7 @@ public class FleetDailyResupply implements EveryFrameScript {
 		float money = cargo.getCredits().get();
 
 		// —— 新增：金币过高时自动扣减 ——
-		if (money > MAX_CREDITS_THRESHOLD) {
+		if (ONCreditsReset && money > MAX_CREDITS_THRESHOLD) {
 			float excess = money * MAX_CREDITS_RESET;
 			cargo.getCredits().subtract(excess);
 			String formatted = String.format("C$ %,.0f", excess);
