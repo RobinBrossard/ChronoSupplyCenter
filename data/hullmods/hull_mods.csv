@@ -1,2 +1,2 @@
 name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sModDesc,sprite
-节能减排,supply_reduction_hullmod,0,,,"standard, special",hullmod_quality,5000,true,false,false,0,0,0,0,data.campaign.econ.industries.SupplyReductionHullMod,降低舰船维护需求，减少舰船部署点或无人机点计算,,,graphics/hullmods/supply_reduction.png
+节能减排,supply_reduction_hullmod,0,,,"standard, special",hullmod_quality,5000,true,false,false,-100,-100,-100,-100,data.campaign.econ.industries.SupplyReductionHullMod,功能强大的船插：%s,,,graphics/hullmods/supply_reduction.png

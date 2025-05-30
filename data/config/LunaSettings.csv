@@ -45,22 +45,38 @@ maxCreditsThreshold,防溢出资金上限,Double,100000000,,默认一亿上限�
 maxCreditsReset,扣减比例,Double,0.2,,资金若超过上限，扣减资金比例。,0.1,0.9,舰队自动补给
 ,,,,,,,,
 CSC_hullmodsWarrning,基本配置,Header,基本配置,,给舰船增益，主要有无人舰点数消除/货舱/油舱/船员舱大小，探测距离，攻击距离等,,,增益船插
-supplyRecoveryBase,补给恢复基础量,Double,0,,无人舰操作点数影响属性复杂，所以这里设置硬性将其设为多少点，一般是0，省事。也可以随便设置一个小数字。,0,100,增益船插
-crewSpaceBonus,额外船员空间,Int,500,,该船插附带可以增加多少船员空间，无人舰不起作用，有人舰可以生效,0,2000,增益船插
-cargoSpaceBonus,额外货舱空间,Int,1000,,该船插附带可以增加多少货舱空间,0,10000,增益船插
-fuelSpaceBonus,额外燃油空间,Int,1000,,该船插附带可以增加多少燃油容量,0,10000,增益船插
-speedBonus,额外最大速度,Double,50,,增加多少最大移动速度 (单位：su/s),0,200,增益船插
-maneuverBonus,额外机动度,Double,100,,增加多少最大转向速率 (单位：°/s),0,360,增益船插
-sensorRangeBonus,额外探测范围,Double,1000,,增加多少探测距离 (单位：su),0,5000,增益船插
-detectionRangeReduction,减少被探测范围,Double,1000,,减少多少被敌方探测距离 (单位：su),0,5000,增益船插
-maxBurnLevel,额外最大宇宙速度,Double,10,,增加多少最大宇宙速度,0,30,增益船插
+supplyBaseConfig,无人舰点数,Int,0,,无人舰操作点数影响属性复杂，所以这里设置硬性将其设为多少点，一般是0，省事。也可以随便设置一个小数字。,0,100,增益船插
+crewBonusConfig,额外船员空间,Int,500,,该船插附带可以增加多少船员空间，无人舰不起作用，有人舰可以生效,0,2000,增益船插
+cargoBonusConfig,额外货舱空间,Int,1000,,该船插附带可以增加多少货舱空间,0,10000,增益船插
+fuelBonusConfig,额外燃油空间,Int,1000,,该船插附带可以增加多少燃油容量,0,10000,增益船插
+speedBonusConfig,额外最大速度,Int,50,,增加多少最大移动速度 (单位：su/s),0,200,增益船插
+maneuverBonusConfig,额外机动度,Int,360,,增加多少最大转向速率 (单位：°/s),0,720,增益船插
+sensorRangeBonusConfig,额外探测范围,Int,1000,,增加多少探测距离 (单位：su),0,5000,增益船插
+detectReductionConfig,减少被探测范围,Int,1000,,减少多少被敌方探测距离 (单位：su),0,5000,增益船插
+maxBurnLevelFlatConfig,额外最大宇宙速度,Int,10,,增加多少最大宇宙速度,0,30,增益船插
 CSC_hullmodsWarrning1,警告，以下增益过于强力，谨慎使用。建议都设为0，保持游戏原设定。,Header,警告，以下增益过于强力，谨慎使用。建议都设为0，保持游戏原设定。,,警告，以下增益过于强力，谨慎使用。都设为0，保持游戏原设定。,,,增益船插
-hullBonus,额外船体结构,Int,10000,,增加多少船体结构值 (HP),0,50000,增益船插
-weaponRangeBonus,武器射程加成,Double,200,,百分比形式提升武器射程(能量和实弹）,0,1000,增益船插
-missileRangeBonus,导弹射程加成,Double,200,,百分比形式提升导弹射程,0,1000,增益船插
-fluxCapacityBonus,额外辐能容量,Double,10000,,增加多少最大辐能容量,0,50000,增益船插
-fluxDissipationBonus,额外辐能耗散速度,Double,10000,,增加多少辐能耗散速度 (单位：flux/s),0,50000,增益船插
-sightRadiusBonus,额外战斗视野半径,Int,1000,,增加多少战斗视野半径 (单位：su),0,5000,增益船插
+hullBonusFlatConfig,额外船体结构,Int,10000,,增加多少船体结构值 (HP),0,50000,增益船插
+weaponRangeConfig,武器射程加成,Int,200,,武器射程(能量和实弹）的百分比加成 (即100表示原来100%%，也就是不变。10表示原来10%%，变小，200表示原来200%%，变为两倍。百分比变化下同。）,100,1000,增益船插
+missileRangeConfig,导弹射程加成,Int,200,,导弹射程的百分比加成,100,1000,增益船插
+fluxCapacityBonusFlatConfig,额外辐能容量,Int,10000,,增加多少最大辐能容量,0,50000,增益船插
+fluxDissipationBonusFlatConfig,额外辐能耗散速度,Int,10000,,增加多少辐能耗散速度 (单位：flux/s),0,50000,增益船插
+sightBonusFlatConfig,额外战斗视野半径,Int,1000,,增加多少战斗视野半径 (单位：su),0,5000,增益船插
+,,,,,,,,
+shieldDamageTakenConfig,护盾承伤乘数,Int,10,,护盾受到的伤害倍率 (10表示变成原来10%%，也就是降低百分之九十；设置大于100则会增加，如120，表示变为原来120%%),0,200,增益船插
+armorBonusFlatValueConfig,装甲加成,Int,10000,,额外增加舰船装甲值,0,50000,增益船插
+weaponFluxCostConfig,武器幅能消耗乘数,Int,10,,所有武器开火的幅能消耗百分比加成,0,200,增益船插
+fighterRefitTimeConfig,舰载机整备时间乘数,Int,10,,舰载机完成整备所需时间的百分比加成,0,200,增益船插
+zeroFluxSpeedConfig,零幅能速度加成,Int,50,,零幅能状态下额外增加的航速值,0,50,增益船插
+accelerationConfig,引擎加速效率,Int,200,,引擎加速度的百分比加成,0,1000,增益船插
+decelerationConfig,引擎减速效率,Int,200,,引擎减速度的百分比加成,0,1000,增益船插
+engineHealthConfig,引擎耐久加成,Int,200,,引擎模块生命值的百分比加成,0,1000,增益船插
+weaponHealthConfig,武器耐久加成,Int,200,,武器模块生命值的百分比加成,0,1000,增益船插
+shieldUnfoldRateConfig,护盾展开速率乘数,Int,200,,护盾展开速度的百分比加成 ,0,1000,增益船插
+overloadTimeConfig,过载时间乘数,Int,10,,武器或护盾过载状态的持续时间百分比加成,0,200,增益船插
+crDecayConfig,CR损耗乘数,Int,10,,战备状态(CR)在战斗中损耗速度的百分比加成,0,200,增益船插
+numFighterBaysBonusConfig,舰载机库,Int,2,,增加舰载机机库,0,10,增益船插
+fighterWingRangeConfig,舰载机作战半径加成,Int,200,,舰载机作战半径百分比加成,0,1000,增益船插
+ordnancePointsConfig,额外装备点数,Int,50,,增加舰船的总装备点数 (OP)。该功能无法实现，留待将来,0,1000,增益船插
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
